@@ -28,9 +28,9 @@ Juan Camilo es un amante de la natación, le gusta aprender de las nuevas tecnol
 
 ## Entregables:
 
-1.1. [diagrama casos de uso](entregables/tarea semana 4/casos.jpg)
-1.2. [archivo word explicación casos de uso](entregables/tarea semana 4/motiv-arche.docx)
-2. [diagrama de clases inicial](entregables/tarea semana 4/diagrama.jpg)
-3. [Lean Canvas](entregables/tarea semana 4/canvas.docx)
-4.1. [Prototipo de baja fidelidad](entregables/tarea semana 4/prototipoBajaFidelidad.pptx)
-4.2. [Prototipo en Figma](https://www.figma.com/file/YDxdBOt0p2bApiQ7BYHpVA/Motiv-ARCHE?node-id=0%3A1)
+* 1.1. [diagrama casos de uso](entregables/tarea semana 4/casos.jpg)
+* 1.2. [archivo word explicación casos de uso](entregables/tarea semana 4/motiv-arche.docx)
+* 2. [diagrama de clases inicial](entregables/tarea semana 4/diagrama.jpg)
+* 3. [Lean Canvas](entregables/tarea semana 4/canvas.docx)
+* 4.1. [Prototipo de baja fidelidad](entregables/tarea semana 4/prototipoBajaFidelidad.pptx)
+* 4.2. [Prototipo en Figma](https://www.figma.com/file/YDxdBOt0p2bApiQ7BYHpVA/Motiv-ARCHE?node-id=0%3A1)
