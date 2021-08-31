@@ -27,10 +27,13 @@ Juan Camilo es un amante de la natación, le gusta aprender de las nuevas tecnol
 #### Biografía de Ever Iván Lerma:
 
 ## Entregables:
-
-* 1.1. [diagrama casos de uso](entregables/tarea semana 4/casos.jpg)
-* 1.2. [archivo word explicación casos de uso](entregables/tarea semana 4/motiv-arche.docx)
-* 2. [diagrama de clases inicial](entregables/tarea semana 4/diagrama.jpg)
-* 3. [Lean Canvas](entregables/tarea semana 4/canvas.docx)
-* 4.1. [Prototipo de baja fidelidad](entregables/tarea semana 4/prototipoBajaFidelidad.pptx)
-* 4.2. [Prototipo en Figma](https://www.figma.com/file/YDxdBOt0p2bApiQ7BYHpVA/Motiv-ARCHE?node-id=0%3A1)
+1. Casos de uso
+   - [Diagrama casos de uso](entregables/tarea%20semana%204/casos.png)
+   - [Archivo word explicación casos de uso](entregables/tarea%20semana%204/motiv-arche.docx)
+2. Diagrama de clases
+   - [Diagrama de clases inicial](entregables/tarea%20semana%204/diagrama.png)
+3. Lean Canvas
+   - [Lean Canvas](entregables/tarea%20semana%204/canvas.docx)
+4. Prototipo de baja fidelidad
+   - [Prototipo de baja fidelidad](entregables/tarea%20semana%204/prototipoBajaFidelidad.pptx)
+   - [Prototipo en Figma](https://www.figma.com/file/YDxdBOt0p2bApiQ7BYHpVA/Motiv-ARCHE?node-id=0%3A1)
