@@ -7,31 +7,31 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.juan.menu.ui.home.HomeFragment"
+        android:name="co.edu.javeriana.motivarche.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_scanner"
-        android:name="com.juan.menu.ui.scanner.ScannerFragment"
+        android:name="co.edu.javeriana.motivarche.ui.scanner.ScannerFragment"
         android:label="@string/menu_scanner"
         tools:layout="@layout/fragment_scanner" />
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.juan.menu.ui.profile.ProfileFragment"
+        android:name="co.edu.javeriana.motivarche.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/nav_museum"
-        android:name="com.juan.menu.ui.museum.MuseumFragment"
+        android:name="co.edu.javeriana.motivarche.ui.museum.MuseumFragment"
         android:label="@string/menu_museum"
         tools:layout="@layout/fragment_museum" />
 
     <fragment
         android:id="@+id/nav_tutorial"
-        android:name="com.juan.menu.ui.tutorial.TutorialFragment"
+        android:name="co.edu.javeriana.motivarche.ui.tutorial.TutorialFragment"
         android:label="@string/menu_tutorial"
         tools:layout="@layout/fragment_tutorial" />
 
