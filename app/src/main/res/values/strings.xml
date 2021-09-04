@@ -20,4 +20,17 @@
     <string name="menu_profile">Editar perfil</string>
     <string name="menu_tutorial">Ver tutorial</string>
     <string name="menu_close_session">Cerrar sesión</string>
+
+    <!-- home -->
+    <string name="home_title">Bienvenido</string>
+    <!-- tutorial -->
+    <string name="tutorial_title">Tutorial</string>
+
+    <!-- profile -->
+    <string name="user_name">Nombre</string>
+    <string name="user_mail">Correo electrónico</string>
+    <string name="actual_user_password">Ingresa tu contraseña actual</string>
+    <string name="new_user_password">Ingresa tu nueva contraseña</string>
+    <string name="save">Guardar cambios</string>
+
 </resources>
