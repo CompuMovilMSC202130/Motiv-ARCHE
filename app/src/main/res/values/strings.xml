@@ -12,4 +12,12 @@
     <string name="register">Registro</string>
     <string name="do_register">Registrarse</string>
     <string name="have_account">¿Ya tienes una cuenta?</string>
+
+    <!-- menu -->
+    <string name="menu_home">Inicio</string>
+    <string name="menu_scanner">Abrir escáner</string>
+    <string name="menu_museum">Ver museos</string>
+    <string name="menu_profile">Editar perfil</string>
+    <string name="menu_tutorial">Ver tutorial</string>
+    <string name="menu_close_session">Cerrar sesión</string>
 </resources>
