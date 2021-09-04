@@ -22,7 +22,7 @@
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="497dp"
-        android:background="#FFFFFF"
+        android:background="@drawable/rounded_corner_view"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,8 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bienvenido"
+            android:text="@string/welcome"
+            android:fontFamily="@font/mulish"
             android:textAlignment="center"
             android:textSize="36sp"
             android:textStyle="bold"
@@ -47,7 +48,8 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ingresa tus credenciales"
+            android:fontFamily="@font/mulish"
+            android:text="@string/put_credentials"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +64,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:ems="10"
-            android:hint="Ingresa tu email"
+            android:fontFamily="@font/mulish"
+            android:background="@drawable/rounded_corner_edit"
+            android:hint="@string/put_email"
             android:inputType="textEmailAddress"
             android:minHeight="48dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,9 +77,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Ingresa tu contraseña"
+            android:hint="@string/put_password"
+            android:fontFamily="@font/mulish"
             android:inputType="textPassword"
             android:minHeight="48dp"
+            android:background="@drawable/rounded_corner_edit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress"
@@ -86,7 +92,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="¿Olvidaste tu contraseña?"
+            android:fontFamily="@font/mulish"
+            android:text="@string/forgot_password"
             android:textColor="#D94C4EC9"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -97,7 +104,8 @@
             android:id="@+id/btnIniciarSesion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Iniciar sesión"
+            android:fontFamily="@font/mulish"
+            android:text="@string/login"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtForgotPassword"
             app:layout_constraintVertical_bias="0.094"
@@ -108,13 +116,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Regístrate"
+            android:fontFamily="@font/mulish"
+            android:minHeight="48dp"
+            android:onClick="irAlRegistro"
+            android:text="@string/signup"
             android:textColor="#D94C4EC9"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnIniciarSesion" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/google" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/fb" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="54dp"
+                android:layout_height="60dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/twitter" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

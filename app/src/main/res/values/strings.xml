@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">MotivARCHE</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="put_credentials">Ingresa tus credenciales</string>
+    <string name="put_username">Ingresa tu nombre de usuario</string>
+    <string name="put_email">Ingresa tu email</string>
+    <string name="put_password">Ingresa tu contraseña</string>
+    <string name="put_confirm_password">Repite tu contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="signup">Regístrate</string>
+    <string name="register">Registro</string>
+    <string name="do_register">Registrarse</string>
+    <string name="have_account">¿Ya tienes una cuenta?</string>
 </resources>
