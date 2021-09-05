@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="89dp"
             android:layout_marginBottom="36dp"
-            android:fontFamily="@font/mulish"
+            android:fontFamily="@font/mulish_regular"
             android:text="@string/tutorial_title"
             android:textAlignment="center"
             android:textSize="36sp"
