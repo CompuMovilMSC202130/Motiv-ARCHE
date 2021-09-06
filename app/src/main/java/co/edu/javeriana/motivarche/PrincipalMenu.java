@@ -35,7 +35,7 @@ public class PrincipalMenu extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         addClickOptionCloseSession();
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_scanner, R.id.nav_museum,R.id.nav_profile,R.id.nav_tutorial,R.id.nav_close_session)
+                R.id.nav_home, R.id.nav_scanner, R.id.nav_museum,R.id.nav_profile,R.id.nav_tutorial,R.id.nav_comentarios,R.id.nav_preguntas,R.id.nav_close_session)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
