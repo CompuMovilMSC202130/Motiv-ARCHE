@@ -12,6 +12,8 @@
     <string name="register">Registro</string>
     <string name="do_register">Registrarse</string>
     <string name="have_account">¿Ya tienes una cuenta?</string>
+    <string name="comentarios">       Tú opinión cuenta!</string>
+    <string name="preguntas">   Escribenos tus dudas aquí.</string>
 
     <!-- menu -->
     <string name="menu_home">Inicio</string>
@@ -20,6 +22,8 @@
     <string name="menu_profile">Editar perfil</string>
     <string name="menu_tutorial">Ver tutorial</string>
     <string name="menu_close_session">Cerrar sesión</string>
+    <string name="menu_comentarios">Comentarios</string>
+    <string name="menu_preguntas">Preguntas</string>
 
     <!-- home -->
     <string name="home_title">Bienvenido</string>

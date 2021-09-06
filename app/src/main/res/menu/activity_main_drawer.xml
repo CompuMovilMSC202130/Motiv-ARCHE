@@ -28,12 +28,18 @@
             android:title="@string/menu_tutorial" />
 
         <item
+            android:id="@+id/nav_comentarios"
+            android:icon="@drawable/ic_menu_comentarios"
+            android:title="@string/menu_comentarios" />
+
+        <item
+            android:id="@+id/nav_preguntas"
+            android:icon="@drawable/ic_menu_preguntas"
+            android:title="@string/menu_preguntas" />
+
+        <item
             android:id="@+id/nav_close_session"
             android:icon="@drawable/ic_menu_close_session"
-            android:title="@string/menu_close_session" />
-
-
-
-
+            android:title="@string/menu_close_session"/>
     </group>
 </menu>
