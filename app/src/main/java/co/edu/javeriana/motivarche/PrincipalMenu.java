@@ -1,11 +1,15 @@
 package co.edu.javeriana.motivarche;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -70,4 +74,6 @@ public class PrincipalMenu extends AppCompatActivity {
         aid.addImage("fox",foxBitmap);
         config.setAugmentedImageDatabase(aid);
     }
+
+
 }

@@ -25,9 +25,9 @@
 
     <fragment
         android:id="@+id/nav_museum"
-        android:name="co.edu.javeriana.motivarche.ui.museum.MuseumFragment"
+        android:name="co.edu.javeriana.motivarche.ui.museum.MapsFragment"
         android:label="@string/menu_museum"
-        tools:layout="@layout/fragment_museum" />
+        tools:layout="@layout/fragment_maps" />
 
     <fragment
         android:id="@+id/nav_tutorial"
