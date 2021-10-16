@@ -24,6 +24,7 @@
     <string name="menu_close_session">Cerrar sesión</string>
     <string name="menu_comentarios">Comentarios</string>
     <string name="menu_preguntas">Preguntas</string>
+    <string name="menu_picture">Tomar imagen/seleccionar imagen</string>
 
     <!-- home -->
     <string name="home_title">Bienvenido</string>
@@ -36,5 +37,7 @@
     <string name="actual_user_password">Ingresa tu contraseña actual</string>
     <string name="new_user_password">Ingresa tu nueva contraseña</string>
     <string name="save">Guardar cambios</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -3,14 +3,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "MotivARCHE"
 include ':app'
-
-include ':sceneform'
-project(':sceneform').projectDir = new File('sceneformsrc/sceneform')
-// this will add sceneformux folder into your project
-include ':sceneformux'
-project(':sceneformux').projectDir = new File('sceneformux/ux')

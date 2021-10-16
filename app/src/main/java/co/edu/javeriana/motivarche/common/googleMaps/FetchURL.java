@@ -1,6 +1,5 @@
 package co.edu.javeriana.motivarche.common.googleMaps;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -11,15 +10,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import co.edu.javeriana.motivarche.ui.museum.MapsFragment;
+import co.edu.javeriana.motivarche.ui.museum.MapsActivity;
 
 
 public class FetchURL extends AsyncTask<String, Void, String> {
-    MapsFragment mContext;
+    MapsActivity mContext;
     String directionMode;
 
-    public FetchURL(MapsFragment mapsFragment) {
-        mContext =mapsFragment;
+    public FetchURL(MapsActivity mapsActivity) {
+        mContext = mapsActivity;
     }
 
 

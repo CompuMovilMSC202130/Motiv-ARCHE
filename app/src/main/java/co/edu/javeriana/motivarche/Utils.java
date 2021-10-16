@@ -6,12 +6,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class Utils extends AppCompatActivity {
 
@@ -26,6 +33,7 @@ public class Utils extends AppCompatActivity {
     public static final String cameraPermission = Manifest.permission.CAMERA;
     public static final String gpsPermission = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final String writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static boolean gpsPermissionEnabled = false;
 
     public static void requestPermission(Activity context, String permission, String justification,String title, int idPermission){
 
@@ -43,40 +51,6 @@ public class Utils extends AppCompatActivity {
                 dialog.show();
             }else{
                 ActivityCompat.requestPermissions(context, new String[]{permission}, idPermission);
-            }
-        }
-    }
-
-    //metodo que permite revisar los permisos
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String [] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch(requestCode){
-            case Utils.GPS_REQUEST_CODE:
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    //checkSettingsLocation();
-                    Log.i("posicion","se tiene acceso al gps desde utils");
-                }else{
-                    Log.i("posicion","no se tiene acceso al gps");
-                    Toast.makeText(this,"No se tiene acceso al gps del dispositivo",Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-
-    }
-
-    //metodo que revisa si tiene el gps activo en el dispositivo
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case Utils.CHECK_SETTINGS: {
-                if (resultCode == RESULT_OK) {
-                    //startLocationUpdates();
-                } else {
-                    Toast.makeText(this, "Sin acceso a localización, hardware deshabilitado!", Toast.LENGTH_LONG).show();
-                }
-                return;
             }
         }
     }

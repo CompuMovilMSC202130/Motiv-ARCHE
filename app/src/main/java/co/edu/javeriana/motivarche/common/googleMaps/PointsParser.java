@@ -1,6 +1,5 @@
 package co.edu.javeriana.motivarche.common.googleMaps;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,14 +13,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import co.edu.javeriana.motivarche.ui.museum.MapsFragment;
+import co.edu.javeriana.motivarche.ui.museum.MapsActivity;
 
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
     String directionMode;
 
-    public PointsParser(MapsFragment mContext, String directionMode) {
+    public PointsParser(MapsActivity mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
         this.directionMode = directionMode;
     }
@@ -75,7 +74,12 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             if (directionMode.equalsIgnoreCase("walking")) {
                 lineOptions.width(10);
                 lineOptions.color(Color.MAGENTA);
-            } else {
+            }
+            else if (directionMode.equalsIgnoreCase("bicycling")) {
+                lineOptions.width(10);
+                lineOptions.color(Color.RED);
+            }
+            else {
                 lineOptions.width(20);
                 lineOptions.color(Color.BLUE);
             }

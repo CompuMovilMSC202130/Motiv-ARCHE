@@ -45,6 +45,28 @@
             >
 
         </activity>
+        <activity android:name=".ui.museum.MapsActivity"
+            android:exported="true" />
+        <activity android:name=".ui.tutorial.TutorialActivity"
+            android:exported="true" />
+
+        <activity android:name=".ui.profile.ProfileActivity"
+            android:exported="true" />
+
+        <activity android:name=".ui.preguntas.PreguntaActivity"
+            android:exported="true" />
+        <activity android:name=".ui.comentarios.ComentarioActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.scanner.AugmentedImageActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="locked"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            >
+
+        </activity> <!-- Indicates whether "Google Play Services for AR" (ARCore) is "required" or "optional". -->
+
 
 
     </application>
