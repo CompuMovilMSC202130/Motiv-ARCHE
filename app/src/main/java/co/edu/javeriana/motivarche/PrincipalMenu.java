@@ -22,6 +22,11 @@ public class PrincipalMenu extends AppCompatActivity {
         setContentView(R.layout.principal_menu);
     }
 
+    public void tomarImagen(View v){
+        Intent imagen = new Intent(this,PictureActivity.class);
+        startActivity(imagen);
+    }
+
     public void abrirMapa(View v){
         Intent map = new Intent(this,MapsActivity.class);
         startActivity(map);

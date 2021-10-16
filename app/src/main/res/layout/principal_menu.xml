@@ -24,6 +24,7 @@
             android:id="@+id/pictureButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="tomarImagen"
             android:text="@string/menu_picture" />
 
         <Button
