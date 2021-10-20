@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "947805491258",
+    "project_id": "analog-bay-327513",
+    "storage_bucket": "analog-bay-327513.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947805491258:android:52f7e605b237416006e503",
+        "android_client_info": {
+          "package_name": "co.edu.javeriana.motivarche"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947805491258-beprkjgd1a5bg255k0gpm4u710m1fcl0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfdEd47YeOlUeGV7hMAz2vV9PVUDcw2jg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947805491258-beprkjgd1a5bg255k0gpm4u710m1fcl0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

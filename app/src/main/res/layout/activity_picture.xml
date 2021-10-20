@@ -21,6 +21,7 @@
         app:srcCompat="@drawable/gallery" />
 
     <LinearLayout
+        android:id="@+id/optionsSelectImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageCameraPicture"
@@ -62,5 +63,20 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="30dp"
         android:text="@string/upload_button" />
+
+    <EditText
+        android:id="@+id/textImageName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/uploadImageDatabase"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="171dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="-190dp"
+        android:hint="@string/imageNameHint"
+        tools:ignore="UnknownId" />
 
 </RelativeLayout>

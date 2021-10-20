@@ -12,9 +12,13 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.AugmentedImage;
@@ -29,10 +33,19 @@ import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -63,6 +76,8 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     private GLSurfaceView surfaceView;
     private ImageView fitToScanView;
     private RequestManager glideRequestManager;
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
 
     private boolean installRequested;
 
@@ -107,6 +122,9 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 .into(fitToScanView);
 
         installRequested = false;
+        mStorageRef = FirebaseStorage.getInstance().getReference("images");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
+
     }
 
     @Override
@@ -397,12 +415,15 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         } else {
             // This is an alternative way to initialize an AugmentedImageDatabase instance,
             // load a pre-existing augmented image database.
+
+
             try (InputStream is = getAssets().open("sample_database.imgdb")) {
                 augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, is);
             } catch (IOException e) {
                 Log.e(TAG, "IO exception loading augmented image database.", e);
                 return false;
             }
+
         }
 
         config.setAugmentedImageDatabase(augmentedImageDatabase);
@@ -416,5 +437,32 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
             Log.e(TAG, "IO exception loading augmented image bitmap.", e);
         }
         return null;
+    }
+
+    private void downloadFile() throws IOException {
+        File localFile = File.createTempFile("images", "jpg");
+        List<StorageReference> imagesRef = mStorageRef.child("images").listAll().getResult().getItems();
+
+        for(StorageReference imageRef : imagesRef){
+            imageRef.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            String filePath = localFile.getPath();
+                            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                            // Successfully downloaded data to local file
+                            // ...
+                            Log.i("FBApp", "succesfully downloaded");
+                            //UpdateUI using the localFile
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle failed download
+                    // ...
+                }
+            });
+        }
+
     }
 }

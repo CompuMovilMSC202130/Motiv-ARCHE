@@ -68,35 +68,35 @@
             android:id="@+id/txtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/txtEmailUsuario"
+            android:layout_marginTop="48dp"
             android:background="@drawable/rounded_corner_edit"
             android:ems="10"
             android:fontFamily="@font/mulish_regular"
             android:hint="@string/put_password"
             android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:layout_marginTop="48dp"
-            android:layout_below="@id/txtEmailUsuario"/>
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/txtPasswordConfirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/txtPassword"
             android:background="@drawable/rounded_corner_edit"
             android:ems="10"
             android:fontFamily="@font/mulish_regular"
             android:hint="@string/put_confirm_password"
             android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:layout_below="@id/txtPassword"/>
+            android:minHeight="48dp" />
 
         <Button
             android:id="@+id/btnRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/mulish_regular"
-            android:text="@string/do_register"
+            android:layout_below="@id/txtPasswordConfirm"
             android:layout_marginTop="48dp"
-            android:layout_below="@id/txtPasswordConfirm"/>
+            android:fontFamily="@font/mulish_regular"
+            android:text="@string/do_register" />
 
         <TextView
             android:id="@+id/textView5"

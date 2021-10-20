@@ -7,8 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".PrincipalMenu">
 
+    <TextView
+        android:id="@+id/titlePrincipalMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/principalMainTitle"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+
+        app:layout_constraintBottom_toTopOf="@+id/textEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="16dp"
+        android:text="email"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.904" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -19,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <Button
             android:id="@+id/pictureButton"
@@ -48,32 +83,8 @@
             android:onClick="abrirTutorial"
             android:text="@string/menu_tutorial" />
 
-        <Button
-            android:id="@+id/profileButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="abrirPerfil"
-            android:text="@string/menu_profile" />
 
-        <Button
-            android:id="@+id/commentButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="abrirComentarios"
-            android:text="@string/menu_comentarios" />
-
-        <Button
-            android:id="@+id/questionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="abrirPreguntas"
-            android:text="@string/menu_preguntas" />
-
-        <Button
-            android:id="@+id/closeButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="cerrarSesion"
-            android:text="@string/menu_close_session" />
     </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

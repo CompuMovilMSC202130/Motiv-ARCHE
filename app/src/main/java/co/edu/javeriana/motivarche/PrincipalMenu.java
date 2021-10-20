@@ -2,9 +2,14 @@ package co.edu.javeriana.motivarche;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import co.edu.javeriana.motivarche.ui.comentarios.ComentarioActivity;
 import co.edu.javeriana.motivarche.ui.museum.MapsActivity;
@@ -16,10 +21,23 @@ import co.edu.javeriana.motivarche.ui.tutorial.TutorialActivity;
 
 public class PrincipalMenu extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+    private TextView mEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_menu);
+
+        mAuth = FirebaseAuth.getInstance();
+        mEmail = findViewById(R.id.textEmail);
+
+        Bundle extras = getIntent().getExtras();
+        String username = extras.getString("username");
+        String email = extras.getString("email");
+
+        mEmail.setText(username+"\n"+email);
+
     }
 
     public void tomarImagen(View v){
@@ -42,26 +60,36 @@ public class PrincipalMenu extends AppCompatActivity {
         startActivity(tutorial);
     }
 
-    public void abrirComentarios(View v){
-        Intent comentario = new Intent(this, ComentarioActivity.class);
-        startActivity(comentario);
-    }
 
-    public void abrirPreguntas(View v){
-        Intent pregunta = new Intent(this, PreguntaActivity.class);
-        startActivity(pregunta);
-    }
 
-    public void abrirPerfil(View v){
-        Intent perfil = new Intent(this, ProfileActivity.class);
-        startActivity(perfil);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
     }
-
-    public void cerrarSesion(View v){
-        Intent close = new Intent(this, MainActivity.class);
-        startActivity(close);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int itemClicked = item.getItemId();
+        if(itemClicked == R.id.menuLogOut){
+            mAuth.signOut();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }else if(itemClicked == R.id.menuComentarios){
+            Intent intent = new Intent(this, ComentarioActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }else if(itemClicked == R.id.menuPreguntas){
+            Intent intent = new Intent(this, PreguntaActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }else if(itemClicked == R.id.menuProfile){
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
-
 
 
 

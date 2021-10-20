@@ -27,12 +27,14 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -41,6 +43,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import co.edu.javeriana.motivarche.R;
 import co.edu.javeriana.motivarche.Utils;
@@ -63,18 +66,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     boolean gpsEnabled = false;
     private final int RADIUS_OF_EARTH_KM = 6371;
     Polyline currentPolyline;
+    private List<Marker> markers = new ArrayList<Marker>();
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if(mMap != null) {
             if (user != null) {
+                markers.remove(user);
                 user.remove();
             }
             LatLng userLatLng = new LatLng(4.6486259, -74.2478973);
             user = mMap.addMarker(new MarkerOptions().position(userLatLng).title("Punto Bogotá").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(userLatLng));
+            markers.add(user);
+            if(markers.size()>1) {
+                zoomMarkers();
+            }else{
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLatLng));
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+            }
             mMap.getUiSettings().setZoomGesturesEnabled(true);
             mMap.getUiSettings().setZoomControlsEnabled(true);
         }
@@ -134,10 +144,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 LatLng position = searchByName(address);
                 if (position != null && mMap != null) {
                     if (searchMarker != null) {
+                        markers.remove(searchMarker);
                         searchMarker.remove();
                     }
                     searchMarker = mMap.addMarker(new MarkerOptions().position(position).title(address).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+                    markers.add(searchMarker);
+                    zoomMarkers();
+                    //mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
 
                     String url = getUrl(position.latitude,position.longitude,user.getPosition().latitude,user.getPosition().longitude,"driving");
                     new FetchURL(this).execute(url,transport);
@@ -214,10 +227,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.i("LOCATION", "Location update in the callback: " + location);
                 if (location != null) {
                     if(user != null){
+                        markers.remove(user);
                         user.remove();
                     }
                     LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                     user = mMap.addMarker(new MarkerOptions().position(userLatLng).title("Usuario").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                    markers.add(user);
+                    if(markers.size()>1) {
+                        zoomMarkers();
+                    }else{
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userLatLng));
+                        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                    }
                 }
             }
         };
@@ -271,12 +292,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Log.i("location","location success");
                         if (location != null) {
                             if(user != null){
+                                markers.remove(user);
                                 user.remove();
                             }
                             LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                             user = mMap.addMarker(new MarkerOptions().position(userLatLng).title("Usuario").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(userLatLng));
-                            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                            markers.add(user);
+                            if(markers.size()>1) {
+                                zoomMarkers();
+                            }else{
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLatLng));
+                                mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                            }
+
                         }
                     }
                 });
@@ -334,6 +362,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
 
+        }
+    }
+
+    private void zoomMarkers() {
+        if (markers.size() > 0 && markers != null) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (Marker marker : markers) {
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            int padding = 200; // offset from edges of the map in pixels
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.animateCamera(cu);
         }
     }
 
