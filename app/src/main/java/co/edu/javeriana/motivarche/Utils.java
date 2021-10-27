@@ -28,6 +28,7 @@ public class Utils extends AppCompatActivity {
     public static final int GPS_REQUEST_CODE = 4;
     public static final int CHECK_SETTINGS = 5;
     public static final int WRITE_EXTERNAL_REQUEST = 6;
+    public static final int FINGERPRINT_REQUEST_CODE = 7;
     public static final String contactsPermission = Manifest.permission.READ_CONTACTS;
     public static final String imagePickerPermission = Manifest.permission.READ_EXTERNAL_STORAGE;
     public static final String cameraPermission = Manifest.permission.CAMERA;
