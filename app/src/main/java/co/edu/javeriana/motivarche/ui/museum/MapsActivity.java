@@ -6,6 +6,10 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -35,6 +39,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -67,6 +72,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int RADIUS_OF_EARTH_KM = 6371;
     Polyline currentPolyline;
     private List<Marker> markers = new ArrayList<Marker>();
+
+    SensorManager sensorManager;
+    Sensor lightSensor;
+    SensorEventListener lightSensorListener;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -102,6 +112,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drivingButton = findViewById(R.id.car);
 
         mGeocoder = new Geocoder(this);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        lightSensorListener = createSensorEventListener();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
@@ -137,6 +152,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         checkSettingsLocation();
     }
 
+
+    //metodo para detectar cambios en el sensor de luminosidad
+    private SensorEventListener createSensorEventListener(){
+        SensorEventListener lightSensorListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                if(mMap != null){
+                    if(sensorEvent.values[0]<5000){
+                        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this,R.raw.googledarkmap));
+                    }else{
+                        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this,R.raw.googlelightmap));
+                    }
+                }
+            }
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+        return lightSensorListener;
+    }
 
     private void generateRoute (String transport){
             String address = search.getText().toString().trim();
@@ -316,12 +351,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResume() {
         super.onResume();
         startLocationUpdates();
+        sensorManager.registerListener(lightSensorListener,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         stopLocationUpdates();
+        sensorManager.unregisterListener(lightSensorListener);
     }
 
     //para el callback de ubicacion
@@ -354,7 +391,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (requestCode) {
             case Utils.CHECK_SETTINGS:
                 if (resultCode == RESULT_OK) {
-                    //starLocationUpdates();
+                    startLocationUpdates();
 
                 } else {
                     Toast.makeText(this, "Sin acceso a localización, hardware deshabilitado!", Toast.LENGTH_LONG).show();
