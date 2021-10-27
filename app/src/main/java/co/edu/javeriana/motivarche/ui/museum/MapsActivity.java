@@ -187,7 +187,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     zoomMarkers();
                     //mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
 
-                    String url = getUrl(position.latitude,position.longitude,user.getPosition().latitude,user.getPosition().longitude,"driving");
+                    String url = getUrl(position.latitude,position.longitude,user.getPosition().latitude,user.getPosition().longitude,transport);
                     new FetchURL(this).execute(url,transport);
 
                     double distancia = distance(position.latitude,position.longitude,user.getPosition().latitude,user.getPosition().longitude);

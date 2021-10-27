@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,6 +57,7 @@ public class PictureActivity extends AppCompatActivity {
     Button pickPictureButton;
     Button takePicturebutton;
     Button uploadPicture;
+    Button getImages;
     ImageView image;
     EditText imageName;
 
@@ -74,6 +78,7 @@ public class PictureActivity extends AppCompatActivity {
         pickPictureButton = findViewById(R.id.buttonSelectImage);
         takePicturebutton = findViewById(R.id.buttonTakePicture);
         image = findViewById(R.id.imageCameraPicture);
+        getImages = findViewById(R.id.buttonGetImages);
         uploadPicture = findViewById(R.id.uploadImageDatabase);
         database = FirebaseDatabase.getInstance();
         myDrawable = getDrawable(R.drawable.gallery);
@@ -116,6 +121,13 @@ public class PictureActivity extends AppCompatActivity {
                 String titleJustification = "Solicitud permiso cámara";
                 Utils.requestPermission((Activity) view.getContext(),Utils.cameraPermission,justification,titleJustification,Utils.IMAGE_TAKE_REQUEST_CODE);
                 initTakePicture();
+            }
+        });
+
+        getImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              openImagesActivity();
             }
         });
 
@@ -186,10 +198,7 @@ public class PictureActivity extends AppCompatActivity {
                     image.setImageBitmap(imageBitmap);
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     imageBitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
-                    String imageEncoded = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
-
                     imageBytes = outputStream.toByteArray();
-                    //TODO falta que grabe las imagenes que tome como foto
                 }
                 break;
         }
@@ -213,14 +222,27 @@ public class PictureActivity extends AppCompatActivity {
                                 //if the upload is successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
+                                if (taskSnapshot.getMetadata() != null) {
+                                    if (taskSnapshot.getMetadata().getReference() != null) {
+                                        Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                                        result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                String imageUrl = uri.toString();
 
-                                UploadImage uImage = new UploadImage();
-                                uImage.setNameImage(imageName.getText().toString().trim());
-                                uImage.setUrlImage(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                                String uploadId = mDatabaseRef.push().getKey();
-                                mDatabaseRef.child(uploadId).setValue(uImage);
-                                //and displaying a success toast
-                                Toast.makeText(getApplicationContext(), "Se ha subido el archivo ", Toast.LENGTH_LONG).show();
+                                                UploadImage uImage = new UploadImage(imageName.getText().toString().trim(),imageUrl);
+                                                String uploadId = mDatabaseRef.push().getKey();
+                                                mDatabaseRef.child(uploadId).setValue(uImage);
+                                                //and displaying a success toast
+                                                Toast.makeText(getApplicationContext(), "Se ha subido el archivo ", Toast.LENGTH_LONG).show();
+                                                //createNewPost(imageUrl);
+                                            }
+                                        });
+                                    }
+                                }
+
+
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -248,7 +270,7 @@ public class PictureActivity extends AppCompatActivity {
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Subiendo");
                 progressDialog.show();
-                StorageReference riversRef = mStorageRef.child("images/" + imageName.getText().toString().trim() + ".jpg");
+                StorageReference riversRef = mStorageRef.child("images/" + imageName.getText().toString().trim()+"-"+System.currentTimeMillis() + "." + getFileExtension(filePath));
                 riversRef.putBytes(imageBytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -295,5 +317,17 @@ public class PictureActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Debe ingresar un nombre a la imagen que quiere subir", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+
+    private void openImagesActivity(){
+        Intent intent = new Intent(this, ImagesActivity.class);
+        startActivity(intent);
     }
 }

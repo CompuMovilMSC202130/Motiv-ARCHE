@@ -29,9 +29,10 @@
     <string name="menu_close_session">Cerrar sesión</string>
     <string name="menu_comentarios">Comentarios</string>
     <string name="menu_preguntas">Preguntas</string>
-    <string name="menu_picture">Tomar imagen/seleccionar imagen</string>
-    <string name="upload_button">Subir imagen al servidor</string>
-    <string name="auth_failed">Error de autenticacion</string>
+    <string name="menu_picture">Subir imágenes/ Ver imágenes</string>
+    <string name="upload_button">Subir imagen</string>
+    <string name="view_image_button">Ver imágenes</string>
+    <string name="auth_failed">Error de autenticación</string>
 
     <!-- home -->
     <string name="home_title">Bienvenido</string>

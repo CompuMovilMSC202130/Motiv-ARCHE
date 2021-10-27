@@ -27,7 +27,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MotivARCHE">
-
+        <activity
+            android:name=".ImagesActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.ar.core"
@@ -39,8 +41,7 @@
         <activity
             android:name=".RegistroActivity"
             android:exported="true"
-            android:label="@string/register"
-            />
+            android:label="@string/register" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -54,8 +55,7 @@
         <activity
             android:name=".PrincipalMenu"
             android:exported="true"
-            android:label="pagina principal"
-            ></activity>
+            android:label="pagina principal" />
         <activity
             android:name=".ui.museum.MapsActivity"
             android:exported="true" />
@@ -76,8 +76,7 @@
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".PictureActivity"
             android:exported="true" />

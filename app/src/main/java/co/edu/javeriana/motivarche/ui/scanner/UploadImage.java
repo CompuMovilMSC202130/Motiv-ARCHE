@@ -9,6 +9,15 @@ public class UploadImage {
 
     }
 
+    public UploadImage(String name, String url){
+        if(name.trim().equals("")){
+            name = "no name";
+        }
+        nameImage = name;
+        urlImage = url;
+
+    }
+
     public String getNameImage() {
         return nameImage;
     }

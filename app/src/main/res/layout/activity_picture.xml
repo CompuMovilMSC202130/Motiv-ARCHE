@@ -51,32 +51,51 @@
             android:text="@string/buttonTakePicture" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/uploadImageDatabase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="207dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="30dp"
-        android:text="@string/upload_button" />
-
     <EditText
         android:id="@+id/textImageName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/uploadImageDatabase"
+        android:layout_above="@+id/optionsGallery"
 
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="171dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="-190dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/roundcorner_text"
         android:hint="@string/imageNameHint"
         tools:ignore="UnknownId" />
 
+
+    <LinearLayout
+        android:id="@+id/optionsGallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        >
+
+        <Button
+            android:id="@+id/uploadImageDatabase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:text="@string/upload_button" />
+
+        <Button
+            android:id="@+id/buttonGetImages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="@string/view_image_button" />
+
+
+    </LinearLayout>
 </RelativeLayout>
