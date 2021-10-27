@@ -45,7 +45,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         Log.i("URL",currentImage.getUrlImage());
 
-        Picasso.with(mContext)
+        Picasso.get()
                 .load(currentImage.getUrlImage())
                 .placeholder(R.mipmap.ic_launcher)
                 .fit()
