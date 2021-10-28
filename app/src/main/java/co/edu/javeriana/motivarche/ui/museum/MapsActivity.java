@@ -137,7 +137,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         cyclingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                generateRoute("cycling");
+                generateRoute("bicycling");
             }
         });
 
