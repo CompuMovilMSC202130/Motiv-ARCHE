@@ -72,17 +72,6 @@ import co.edu.javeriana.motivarche.common.ARCore.FullScreenHelper;
 import co.edu.javeriana.motivarche.common.ARCore.SnackbarHelper;
 import co.edu.javeriana.motivarche.common.ARCore.TrackingStateHelper;
 
-
-<<<<<<< HEAD
-public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
-    private static final String TAG = AugmentedImageActivity.class.getSimpleName();
-
-    private GLSurfaceView surfaceView;
-    private ImageView fitToScanView;
-    private RequestManager glideRequestManager;
-    private StorageReference mStorageRef;
-=======
-
 public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
     private static final String TAG = AugmentedImageActivity.class.getSimpleName();
 
@@ -94,7 +83,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     private ImageView fitToScanView;
     private RequestManager glideRequestManager;
     private DatabaseReference mDatabaseRef;
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
     private boolean installRequested;
     private Session session;
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -104,11 +92,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     private final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
     private final AugmentedImageRenderer augmentedImageRenderer = new AugmentedImageRenderer();
     private boolean shouldConfigureSession = false;
-<<<<<<< HEAD
-
-=======
-    private boolean useSingleImage = true;
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
     // Augmented image and its associated center pose anchor, keyed by index of the augmented image in
     // the database.
     private final Map<Integer, Pair<AugmentedImage, Anchor>> augmentedImageMap = new HashMap<>();
@@ -137,10 +120,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
         setContentView(R.layout.activity_scanner);
         surfaceView = findViewById(R.id.surfaceview);
-<<<<<<< HEAD
-        displayRotationHelper = new DisplayRotationHelper(this);
-=======
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
 
         displayRotationHelper = new DisplayRotationHelper(this);
 
@@ -158,11 +137,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 .into(fitToScanView);
 
         installRequested = false;
-<<<<<<< HEAD
-        mStorageRef = FirebaseStorage.getInstance().getReference("images");
-=======
-
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
 
     }
 
@@ -190,20 +164,14 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     case INSTALLED:
                         break;
                 }
-<<<<<<< HEAD
 
-=======
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
                 if (!CameraPermissionHelper.hasCameraPermission(this)) {
                     CameraPermissionHelper.requestCameraPermission(this);
                     return;
                 }
 
-<<<<<<< HEAD
                 session = new Session( this);
-=======
-                session = new Session(this);
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
+
             } catch (UnavailableArcoreNotInstalledException
                     | UnavailableUserDeclinedInstallationException e) {
                 message = "Por favor instale ARCore";
@@ -431,7 +399,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
     private boolean setupAugmentedImageDatabase(Config config) {
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
-<<<<<<< HEAD
+
         if(!Utils.arImages.isEmpty()){
             for(Map.Entry<String,Bitmap> entrySet: Utils.arImages.entrySet()){
                 augmentedImageDatabase.addImage(entrySet.getKey(), entrySet.getValue());
@@ -444,88 +412,4 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         }
     }
 
-=======
-
-        if (useSingleImage) {
-            Bitmap augmentedImageBitmap = loadAugmentedImageBitmap();
-            if (augmentedImageBitmap == null) {
-                return false;
-            }
-
-            augmentedImageDatabase = new AugmentedImageDatabase(session);
-            augmentedImageDatabase.addImage("planeta tierra", augmentedImageBitmap);
-            // If the physical size of the image is known, you can instead use:
-            //     augmentedImageDatabase.addImage("image_name", augmentedImageBitmap, widthInMeters);
-            // This will improve the initial detection speed. ARCore will still actively estimate the
-            // physical size of the image as it is viewed from multiple viewpoints.
-        } else {
-            // This is an alternative way to initialize an AugmentedImageDatabase instance,
-            // load a pre-existing augmented image database.
-            try (InputStream is = getAssets().open("sample_database.imgdb")) {
-                augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, is);
-            } catch (IOException e) {
-                Log.e(TAG, "IO exception loading augmented image database.", e);
-                return false;
-            }
-        }
-
-        config.setAugmentedImageDatabase(augmentedImageDatabase);
-        return true;
-
-
-
-        /*
-        if(imagenes !=null){
-            for(UploadImage im : imagenes) {
-
-                /*
-                bitmapImg = null;
-                Picasso.get().load(im.getUrlImage()).into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        // loaded bitmap is here (bitmap)
-                        bitmapImg = bitmap;
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        Toast.makeText(AugmentedImageActivity.this,"error: "+e.getMessage().toString(),Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {}
-                });
-
-                if(bitmapImg != null){
-                    imageDatabase.addImage(im.getNameImage(),bitmapImg);
-                }
-
-
-                try {
-                    imageDatabase.addImage(im.getNameImage(),Utils.getBitmapFromURL(im.getUrlImage()));
-                } catch(Exception e) {
-                    Toast.makeText(AugmentedImageActivity.this,"error:"+ e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        }
-
-
-            Toast.makeText(AugmentedImageActivity.this,"Numero de imagenes:"+ imageDatabase.getNumImages(), Toast.LENGTH_SHORT).show();
-            config.setAugmentedImageDatabase(imageDatabase);
-            return true;
-
-            */
-    }
-
-    private Bitmap loadAugmentedImageBitmap() {
-        try (InputStream is = getAssets().open("default.jpg")) {
-            return BitmapFactory.decodeStream(is);
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception loading augmented image bitmap.", e);
-        }
-        return null;
-    }
->>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
 }
