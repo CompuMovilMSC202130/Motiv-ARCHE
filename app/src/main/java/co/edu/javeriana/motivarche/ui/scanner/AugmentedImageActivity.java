@@ -75,17 +75,12 @@ import co.edu.javeriana.motivarche.common.ARCore.TrackingStateHelper;
 public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
     private static final String TAG = AugmentedImageActivity.class.getSimpleName();
 
-    List<UploadImage> imagenes = new ArrayList<UploadImage>();
-
-
-    Bitmap bitmapImg;
     private GLSurfaceView surfaceView;
     private ImageView fitToScanView;
     private RequestManager glideRequestManager;
     private DatabaseReference mDatabaseRef;
     private boolean installRequested;
     private Session session;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
     private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private DisplayRotationHelper displayRotationHelper;
     private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(this);
@@ -102,22 +97,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         super.onCreate(savedInstanceState);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
-                    imagenes.add(uploadImage);
-                    Log.i("firebase", uploadImage.getNameImage() + " " + uploadImage.getUrlImage());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(AugmentedImageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         setContentView(R.layout.activity_scanner);
         surfaceView = findViewById(R.id.surfaceview);
 
@@ -137,7 +116,12 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 .into(fitToScanView);
 
         installRequested = false;
-
+        createARDatabase();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -282,7 +266,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
             // Obtain the current frame from ARSession. When the configuration is set to
             // UpdateMode.BLOCKING (it is by default), this will throttle the rendering to the
             // camera framerate.
-            session.resume();
+
             Frame frame = session.update();
             Camera camera = frame.getCamera();
 
@@ -316,7 +300,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         Config config = new Config(session);
         config.setFocusMode(Config.FocusMode.AUTO);
         if (!setupAugmentedImageDatabase(config)) {
-            messageSnackbarHelper.showError(this, "Could not setup augmented image database");
+            messageSnackbarHelper.showError(this, "No se pudo configurar la base de datos");
         }
         session.configure(config);
     }
@@ -410,6 +394,39 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         }else{
             return false;
         }
+    }
+
+    private void createARDatabase(){
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot postSnapshot : snapshot.getChildren()){
+                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
+
+                    Picasso.get().load(uploadImage.getUrlImage()).into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            Utils.arImages.put(uploadImage.getNameImage(),bitmap);
+                            Log.i("TARGETS","agregando target "+uploadImage.getNameImage());
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Log.i("TARGETS error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("TARGETS error","error database "+error.getMessage());
+            }
+        });
     }
 
 }

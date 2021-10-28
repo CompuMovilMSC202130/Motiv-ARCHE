@@ -56,40 +56,6 @@ public class PrincipalMenu extends AppCompatActivity {
 
         mEmail.setText(username+"\n"+email);
 
-
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot postSnapshot : snapshot.getChildren()){
-                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
-
-                    Picasso.get().load(uploadImage.getUrlImage()).into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            Utils.arImages.put(uploadImage.getNameImage(),bitmap);
-                            Log.i("TARGETS","agregando target "+uploadImage.getNameImage());
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                            Log.i("TARGETS error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("TARGETS error","error database "+error.getMessage());
-            }
-        });
-
-
     }
 
     public void tomarImagen(View v){
