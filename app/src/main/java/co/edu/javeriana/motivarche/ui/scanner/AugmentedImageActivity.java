@@ -28,6 +28,7 @@ import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
+import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
@@ -51,6 +52,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import co.edu.javeriana.motivarche.R;
+import co.edu.javeriana.motivarche.Utils;
 import co.edu.javeriana.motivarche.common.ARCore.BackgroundRenderer;
 import co.edu.javeriana.motivarche.common.ARCore.CameraPermissionHelper;
 import co.edu.javeriana.motivarche.common.ARCore.DisplayRotationHelper;
@@ -59,28 +61,14 @@ import co.edu.javeriana.motivarche.common.ARCore.SnackbarHelper;
 import co.edu.javeriana.motivarche.common.ARCore.TrackingStateHelper;
 
 
-/**
- * This app extends the HelloAR Java app to include image tracking functionality.
- *
- * <p>In this example, we assume all images are static or moving slowly with a large occupation of
- * the screen. If the target is actively moving, we recommend to check
- * AugmentedImage.getTrackingMethod() and render only when the tracking method equals to
- * FULL_TRACKING. See details in <a
- * href="https://developers.google.com/ar/develop/java/augmented-images/">Recognize and Augment
- * Images</a>.
- */
 public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
     private static final String TAG = AugmentedImageActivity.class.getSimpleName();
 
-    // Rendering. The Renderers are created here, and initialized when the GL surface is created.
     private GLSurfaceView surfaceView;
     private ImageView fitToScanView;
     private RequestManager glideRequestManager;
     private StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
-
     private boolean installRequested;
-
     private Session session;
     private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private DisplayRotationHelper displayRotationHelper;
@@ -91,12 +79,8 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
     private boolean shouldConfigureSession = false;
 
-    // Augmented image configuration and rendering.
-    // Load a single image (true) or a pre-generated image database (false).
-    private final boolean useSingleImage = false;
     // Augmented image and its associated center pose anchor, keyed by index of the augmented image in
-    // the
-    // database.
+    // the database.
     private final Map<Integer, Pair<AugmentedImage, Anchor>> augmentedImageMap = new HashMap<>();
     private PhysicsController physicsController;
 
@@ -105,7 +89,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
         surfaceView = findViewById(R.id.surfaceview);
-        displayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
+        displayRotationHelper = new DisplayRotationHelper(this);
 
         // Set up renderer.
         surfaceView.setPreserveEGLContextOnPause(true);
@@ -123,7 +107,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
         installRequested = false;
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
 
     }
 
@@ -144,7 +127,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     @Override
     protected void onResume() {
         super.onResume();
-
         if (session == null) {
             Exception exception = null;
             String message = null;
@@ -157,26 +139,24 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                         break;
                 }
 
-                // ARCore requires camera permissions to operate. If we did not yet obtain runtime
-                // permission on Android M and above, now is a good time to ask the user for it.
                 if (!CameraPermissionHelper.hasCameraPermission(this)) {
                     CameraPermissionHelper.requestCameraPermission(this);
                     return;
                 }
 
-                session = new Session(/* context = */ this);
+                session = new Session( this);
             } catch (UnavailableArcoreNotInstalledException
                     | UnavailableUserDeclinedInstallationException e) {
-                message = "Please install ARCore";
+                message = "Por favor instale ARCore";
                 exception = e;
             } catch (UnavailableApkTooOldException e) {
-                message = "Please update ARCore";
+                message = "Actualice ARCore";
                 exception = e;
             } catch (UnavailableSdkTooOldException e) {
-                message = "Please update this app";
+                message = "Actualice la version de la aplicacion";
                 exception = e;
             } catch (Exception e) {
-                message = "This device does not support AR";
+                message = "Este dispositivo no soporta ARCore";
                 exception = e;
             }
 
@@ -198,7 +178,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         try {
             session.resume();
         } catch (CameraNotAvailableException e) {
-            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
+            messageSnackbarHelper.showError(this, "Camara no disponible. Tratando de reiniciar la aplicacion.");
             session = null;
             return;
         }
@@ -226,10 +206,9 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
             Toast.makeText(
-                    this, "Camera permissions are needed to run this application", Toast.LENGTH_LONG)
+                    this, "Se requiere permisos de la camara para ejecutar esta funcionalidad", Toast.LENGTH_LONG)
                     .show();
             if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
-                // Permission denied with checking "Do not ask again".
                 CameraPermissionHelper.launchPermissionSettings(this);
             }
             finish();
@@ -276,10 +255,10 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
         try {
             session.setCameraTextureName(backgroundRenderer.getTextureId());
-
             // Obtain the current frame from ARSession. When the configuration is set to
             // UpdateMode.BLOCKING (it is by default), this will throttle the rendering to the
             // camera framerate.
+            session.resume();
             Frame frame = session.update();
             Camera camera = frame.getCamera();
 
@@ -324,12 +303,13 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 frame.getUpdatedTrackables(AugmentedImage.class);
 
         // Iterate to update augmentedImageMap, remove elements we cannot draw.
+
         for (AugmentedImage augmentedImage : updatedAugmentedImages) {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
-                    String text = String.format("Detected Image %d", augmentedImage.getIndex());
+                    String text = String.format("Imagen detectada %s", augmentedImage.getName());
                     messageSnackbarHelper.showMessage(this, text);
                     break;
 
@@ -362,7 +342,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                         Pose mazeGravityPose = augmentedImage.getCenterPose().inverse().compose(worldGravityPose);
                         float mazeGravity[] = mazeGravityPose.getTranslation();
                         physicsController.applyGravityToBall(mazeGravity);
-
                         physicsController.updatePhysics();
                     }
                     break;
@@ -375,6 +354,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     break;
             }
         }
+
 
         // Draw all images in augmentedImageMap
         for (Pair<AugmentedImage, Anchor> pair : augmentedImageMap.values()) {
@@ -389,80 +369,21 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     break;
             }
         }
+
     }
 
     private boolean setupAugmentedImageDatabase(Config config) {
-        AugmentedImageDatabase augmentedImageDatabase;
-
-        // There are two ways to configure an AugmentedImageDatabase:
-        // 1. Add Bitmap to DB directly
-        // 2. Load a pre-built AugmentedImageDatabase
-        // Option 2) has
-        // * shorter setup time
-        // * doesn't require images to be packaged in apk.
-        if (useSingleImage) {
-            Bitmap augmentedImageBitmap = loadAugmentedImageBitmap();
-            if (augmentedImageBitmap == null) {
-                return false;
+        AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
+        if(!Utils.arImages.isEmpty()){
+            for(Map.Entry<String,Bitmap> entrySet: Utils.arImages.entrySet()){
+                augmentedImageDatabase.addImage(entrySet.getKey(), entrySet.getValue());
             }
 
-            augmentedImageDatabase = new AugmentedImageDatabase(session);
-            augmentedImageDatabase.addImage("image_name", augmentedImageBitmap);
-            // If the physical size of the image is known, you can instead use:
-            //     augmentedImageDatabase.addImage("image_name", augmentedImageBitmap, widthInMeters);
-            // This will improve the initial detection speed. ARCore will still actively estimate the
-            // physical size of the image as it is viewed from multiple viewpoints.
-        } else {
-            // This is an alternative way to initialize an AugmentedImageDatabase instance,
-            // load a pre-existing augmented image database.
-
-
-            try (InputStream is = getAssets().open("sample_database.imgdb")) {
-                augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, is);
-            } catch (IOException e) {
-                Log.e(TAG, "IO exception loading augmented image database.", e);
-                return false;
-            }
-
+            config.setAugmentedImageDatabase(augmentedImageDatabase);
+            return true;
+        }else{
+            return false;
         }
-
-        config.setAugmentedImageDatabase(augmentedImageDatabase);
-        return true;
     }
 
-    private Bitmap loadAugmentedImageBitmap() {
-        try (InputStream is = getAssets().open("default.jpg")) {
-            return BitmapFactory.decodeStream(is);
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception loading augmented image bitmap.", e);
-        }
-        return null;
-    }
-
-    private void downloadFile() throws IOException {
-        File localFile = File.createTempFile("images", "jpg");
-        List<StorageReference> imagesRef = mStorageRef.child("images").listAll().getResult().getItems();
-
-        for(StorageReference imageRef : imagesRef){
-            imageRef.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            String filePath = localFile.getPath();
-                            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-                            // Successfully downloaded data to local file
-                            // ...
-                            Log.i("FBApp", "succesfully downloaded");
-                            //UpdateUI using the localFile
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle failed download
-                    // ...
-                }
-            });
-        }
-
-    }
 }

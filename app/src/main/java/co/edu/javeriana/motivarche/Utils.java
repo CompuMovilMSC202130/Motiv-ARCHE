@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utils extends AppCompatActivity {
 
@@ -35,6 +37,7 @@ public class Utils extends AppCompatActivity {
     public static final String gpsPermission = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final String writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     public static boolean gpsPermissionEnabled = false;
+    public static Map<String,Bitmap> arImages = new HashMap<>();
 
     public static void requestPermission(Activity context, String permission, String justification,String title, int idPermission){
 
