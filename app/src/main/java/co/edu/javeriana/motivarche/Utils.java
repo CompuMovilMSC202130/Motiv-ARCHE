@@ -4,22 +4,17 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -38,6 +33,7 @@ public class Utils extends AppCompatActivity {
     public static final String gpsPermission = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final String writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     public static boolean gpsPermissionEnabled = false;
+    public static Map<String,Bitmap> arImages = new HashMap<>();
 
     public static void requestPermission(Activity context, String permission, String justification,String title, int idPermission){
 
@@ -56,21 +52,6 @@ public class Utils extends AppCompatActivity {
             }else{
                 ActivityCompat.requestPermissions(context, new String[]{permission}, idPermission);
             }
-        }
-    }
-
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 

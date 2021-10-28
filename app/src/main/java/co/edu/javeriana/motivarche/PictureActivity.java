@@ -240,9 +240,6 @@ public class PictureActivity extends AppCompatActivity {
                                         });
                                     }
                                 }
-
-
-
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -270,21 +267,42 @@ public class PictureActivity extends AppCompatActivity {
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Subiendo");
                 progressDialog.show();
-                StorageReference riversRef = mStorageRef.child("images/" + imageName.getText().toString().trim()+"-"+System.currentTimeMillis() + "." + getFileExtension(filePath));
+                StorageReference riversRef = mStorageRef.child("images/" + imageName.getText().toString().trim()+ ".png");
                 riversRef.putBytes(imageBytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+
+
+
+
+
+
+
+
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         //if the upload is successfull
                         //hiding the progress dialog
                         progressDialog.dismiss();
 
-                        UploadImage uImage = new UploadImage();
-                        uImage.setNameImage(imageName.getText().toString().trim());
-                        uImage.setUrlImage(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                        String uploadId = mDatabaseRef.push().getKey();
-                        mDatabaseRef.child(uploadId).setValue(uImage);
-                        //and displaying a success toast
-                        Toast.makeText(getApplicationContext(), "Se ha subido el archivo ", Toast.LENGTH_LONG).show();
+
+
+                        if (taskSnapshot.getMetadata() != null) {
+                            if (taskSnapshot.getMetadata().getReference() != null) {
+                                Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                                result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String imageUrl = uri.toString();
+
+                                        UploadImage uImage = new UploadImage(imageName.getText().toString().trim(),imageUrl);
+                                        String uploadId = mDatabaseRef.push().getKey();
+                                        mDatabaseRef.child(uploadId).setValue(uImage);
+                                        //and displaying a success toast
+                                        Toast.makeText(getApplicationContext(), "Se ha subido el archivo ", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {

@@ -31,6 +31,7 @@ import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
+import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
@@ -71,32 +72,23 @@ import co.edu.javeriana.motivarche.common.ARCore.FullScreenHelper;
 import co.edu.javeriana.motivarche.common.ARCore.SnackbarHelper;
 import co.edu.javeriana.motivarche.common.ARCore.TrackingStateHelper;
 
-
-
 public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
     private static final String TAG = AugmentedImageActivity.class.getSimpleName();
 
-    List<UploadImage> imagenes = new ArrayList<UploadImage>();
-
-
-    Bitmap bitmapImg;
     private GLSurfaceView surfaceView;
     private ImageView fitToScanView;
     private RequestManager glideRequestManager;
     private DatabaseReference mDatabaseRef;
     private boolean installRequested;
     private Session session;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
     private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private DisplayRotationHelper displayRotationHelper;
     private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(this);
     private final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
     private final AugmentedImageRenderer augmentedImageRenderer = new AugmentedImageRenderer();
     private boolean shouldConfigureSession = false;
-    private boolean useSingleImage = true;
     // Augmented image and its associated center pose anchor, keyed by index of the augmented image in
-    // the
-    // database.
+    // the database.
     private final Map<Integer, Pair<AugmentedImage, Anchor>> augmentedImageMap = new HashMap<>();
     private PhysicsController physicsController;
 
@@ -105,22 +97,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         super.onCreate(savedInstanceState);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
-                    imagenes.add(uploadImage);
-                    Log.i("firebase", uploadImage.getNameImage() + " " + uploadImage.getUrlImage());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(AugmentedImageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         setContentView(R.layout.activity_scanner);
         surfaceView = findViewById(R.id.surfaceview);
 
@@ -140,8 +116,12 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 .into(fitToScanView);
 
         installRequested = false;
-
-
+        createARDatabase();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -157,7 +137,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     @Override
     protected void onResume() {
         super.onResume();
-
         if (session == null) {
             Exception exception = null;
             String message = null;
@@ -169,24 +148,26 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     case INSTALLED:
                         break;
                 }
+
                 if (!CameraPermissionHelper.hasCameraPermission(this)) {
                     CameraPermissionHelper.requestCameraPermission(this);
                     return;
                 }
 
-                session = new Session(this);
+                session = new Session( this);
+
             } catch (UnavailableArcoreNotInstalledException
                     | UnavailableUserDeclinedInstallationException e) {
-                message = "Please install ARCore";
+                message = "Por favor instale ARCore";
                 exception = e;
             } catch (UnavailableApkTooOldException e) {
-                message = "Please update ARCore";
+                message = "Actualice ARCore";
                 exception = e;
             } catch (UnavailableSdkTooOldException e) {
-                message = "Please update this app";
+                message = "Actualice la version de la aplicacion";
                 exception = e;
             } catch (Exception e) {
-                message = "This device does not support AR";
+                message = "Este dispositivo no soporta ARCore";
                 exception = e;
             }
 
@@ -208,7 +189,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         try {
             session.resume();
         } catch (CameraNotAvailableException e) {
-            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
+            messageSnackbarHelper.showError(this, "Camara no disponible. Tratando de reiniciar la aplicacion.");
             session = null;
             return;
         }
@@ -233,10 +214,9 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
             Toast.makeText(
-                    this, "Camera permissions are needed to run this application", Toast.LENGTH_LONG)
+                    this, "Se requiere permisos de la camara para ejecutar esta funcionalidad", Toast.LENGTH_LONG)
                     .show();
             if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
-                // Permission denied with checking "Do not ask again".
                 CameraPermissionHelper.launchPermissionSettings(this);
             }
             finish();
@@ -283,10 +263,10 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
         try {
             session.setCameraTextureName(backgroundRenderer.getTextureId());
-
             // Obtain the current frame from ARSession. When the configuration is set to
             // UpdateMode.BLOCKING (it is by default), this will throttle the rendering to the
             // camera framerate.
+
             Frame frame = session.update();
             Camera camera = frame.getCamera();
 
@@ -320,7 +300,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         Config config = new Config(session);
         config.setFocusMode(Config.FocusMode.AUTO);
         if (!setupAugmentedImageDatabase(config)) {
-            messageSnackbarHelper.showError(this, "Could not setup augmented image database");
+            messageSnackbarHelper.showError(this, "No se pudo configurar la base de datos");
         }
         session.configure(config);
     }
@@ -331,6 +311,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 frame.getUpdatedTrackables(AugmentedImage.class);
 
         // Iterate to update augmentedImageMap, remove elements we cannot draw.
+
         for (AugmentedImage augmentedImage : updatedAugmentedImages) {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
@@ -369,7 +350,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                         Pose mazeGravityPose = augmentedImage.getCenterPose().inverse().compose(worldGravityPose);
                         float mazeGravity[] = mazeGravityPose.getTranslation();
                         physicsController.applyGravityToBall(mazeGravity);
-
                         physicsController.updatePhysics();
                     }
                     break;
@@ -382,6 +362,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     break;
             }
         }
+
 
         // Draw all images in augmentedImageMap
         for (Pair<AugmentedImage, Anchor> pair : augmentedImageMap.values()) {
@@ -396,91 +377,56 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     break;
             }
         }
+
     }
 
 
     private boolean setupAugmentedImageDatabase(Config config) {
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
 
-        if (useSingleImage) {
-            Bitmap augmentedImageBitmap = loadAugmentedImageBitmap();
-            if (augmentedImageBitmap == null) {
-                return false;
+        if(!Utils.arImages.isEmpty()){
+            for(Map.Entry<String,Bitmap> entrySet: Utils.arImages.entrySet()){
+                augmentedImageDatabase.addImage(entrySet.getKey(), entrySet.getValue());
             }
 
-            augmentedImageDatabase = new AugmentedImageDatabase(session);
-            augmentedImageDatabase.addImage("planeta tierra", augmentedImageBitmap);
-            // If the physical size of the image is known, you can instead use:
-            //     augmentedImageDatabase.addImage("image_name", augmentedImageBitmap, widthInMeters);
-            // This will improve the initial detection speed. ARCore will still actively estimate the
-            // physical size of the image as it is viewed from multiple viewpoints.
-        } else {
-            // This is an alternative way to initialize an AugmentedImageDatabase instance,
-            // load a pre-existing augmented image database.
-            try (InputStream is = getAssets().open("sample_database.imgdb")) {
-                augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, is);
-            } catch (IOException e) {
-                Log.e(TAG, "IO exception loading augmented image database.", e);
-                return false;
-            }
-        }
-
-        config.setAugmentedImageDatabase(augmentedImageDatabase);
-        return true;
-
-
-
-        /*
-        if(imagenes !=null){
-            for(UploadImage im : imagenes) {
-
-                /*
-                bitmapImg = null;
-                Picasso.get().load(im.getUrlImage()).into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        // loaded bitmap is here (bitmap)
-                        bitmapImg = bitmap;
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        Toast.makeText(AugmentedImageActivity.this,"error: "+e.getMessage().toString(),Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {}
-                });
-
-                if(bitmapImg != null){
-                    imageDatabase.addImage(im.getNameImage(),bitmapImg);
-                }
-
-
-                try {
-                    imageDatabase.addImage(im.getNameImage(),Utils.getBitmapFromURL(im.getUrlImage()));
-                } catch(Exception e) {
-                    Toast.makeText(AugmentedImageActivity.this,"error:"+ e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        }
-
-
-            Toast.makeText(AugmentedImageActivity.this,"Numero de imagenes:"+ imageDatabase.getNumImages(), Toast.LENGTH_SHORT).show();
-            config.setAugmentedImageDatabase(imageDatabase);
+            config.setAugmentedImageDatabase(augmentedImageDatabase);
             return true;
-
-            */
-    }
-
-    private Bitmap loadAugmentedImageBitmap() {
-        try (InputStream is = getAssets().open("default.jpg")) {
-            return BitmapFactory.decodeStream(is);
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception loading augmented image bitmap.", e);
+        }else{
+            return false;
         }
-        return null;
     }
+
+    private void createARDatabase(){
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot postSnapshot : snapshot.getChildren()){
+                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
+
+                    Picasso.get().load(uploadImage.getUrlImage()).into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            Utils.arImages.put(uploadImage.getNameImage(),bitmap);
+                            Log.i("TARGETS","agregando target "+uploadImage.getNameImage());
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Log.i("TARGETS error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("TARGETS error","error database "+error.getMessage());
+            }
+        });
+    }
+
 }
