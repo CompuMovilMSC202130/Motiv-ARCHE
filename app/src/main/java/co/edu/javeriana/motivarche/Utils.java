@@ -18,9 +18,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
+=======
+import java.net.HttpURLConnection;
+import java.net.URL;
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
 
 public class Utils extends AppCompatActivity {
 
@@ -56,6 +62,21 @@ public class Utils extends AppCompatActivity {
             }else{
                 ActivityCompat.requestPermissions(context, new String[]{permission}, idPermission);
             }
+        }
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -3,10 +3,13 @@ package co.edu.javeriana.motivarche.ui.scanner;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -34,16 +37,24 @@ import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +62,7 @@ import java.util.Map;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import co.edu.javeriana.motivarche.ImagesActivity;
 import co.edu.javeriana.motivarche.R;
 import co.edu.javeriana.motivarche.Utils;
 import co.edu.javeriana.motivarche.common.ARCore.BackgroundRenderer;
@@ -61,6 +73,7 @@ import co.edu.javeriana.motivarche.common.ARCore.SnackbarHelper;
 import co.edu.javeriana.motivarche.common.ARCore.TrackingStateHelper;
 
 
+<<<<<<< HEAD
 public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
     private static final String TAG = AugmentedImageActivity.class.getSimpleName();
 
@@ -68,17 +81,34 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     private ImageView fitToScanView;
     private RequestManager glideRequestManager;
     private StorageReference mStorageRef;
+=======
+
+public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
+    private static final String TAG = AugmentedImageActivity.class.getSimpleName();
+
+    List<UploadImage> imagenes = new ArrayList<UploadImage>();
+
+
+    Bitmap bitmapImg;
+    private GLSurfaceView surfaceView;
+    private ImageView fitToScanView;
+    private RequestManager glideRequestManager;
+    private DatabaseReference mDatabaseRef;
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
     private boolean installRequested;
     private Session session;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
     private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private DisplayRotationHelper displayRotationHelper;
     private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(this);
-
     private final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
     private final AugmentedImageRenderer augmentedImageRenderer = new AugmentedImageRenderer();
-
     private boolean shouldConfigureSession = false;
+<<<<<<< HEAD
 
+=======
+    private boolean useSingleImage = true;
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
     // Augmented image and its associated center pose anchor, keyed by index of the augmented image in
     // the database.
     private final Map<Integer, Pair<AugmentedImage, Anchor>> augmentedImageMap = new HashMap<>();
@@ -87,11 +117,33 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
+                    imagenes.add(uploadImage);
+                    Log.i("firebase", uploadImage.getNameImage() + " " + uploadImage.getUrlImage());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AugmentedImageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         setContentView(R.layout.activity_scanner);
         surfaceView = findViewById(R.id.surfaceview);
+<<<<<<< HEAD
+        displayRotationHelper = new DisplayRotationHelper(this);
+=======
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
+
         displayRotationHelper = new DisplayRotationHelper(this);
 
-        // Set up renderer.
         surfaceView.setPreserveEGLContextOnPause(true);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0); // Alpha used for plane blending.
@@ -106,17 +158,17 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 .into(fitToScanView);
 
         installRequested = false;
+<<<<<<< HEAD
         mStorageRef = FirebaseStorage.getInstance().getReference("images");
+=======
+
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
 
     }
 
     @Override
     protected void onDestroy() {
         if (session != null) {
-            // Explicitly close ARCore Session to release native resources.
-            // Review the API reference for important considerations before calling close() in apps with
-            // more complicated lifecycle requirements:
-            // https://developers.google.com/ar/reference/java/arcore/reference/com/google/ar/core/Session#close()
             session.close();
             session = null;
         }
@@ -138,13 +190,20 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                     case INSTALLED:
                         break;
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
                 if (!CameraPermissionHelper.hasCameraPermission(this)) {
                     CameraPermissionHelper.requestCameraPermission(this);
                     return;
                 }
 
+<<<<<<< HEAD
                 session = new Session( this);
+=======
+                session = new Session(this);
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
             } catch (UnavailableArcoreNotInstalledException
                     | UnavailableUserDeclinedInstallationException e) {
                 message = "Por favor instale ARCore";
@@ -192,9 +251,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     public void onPause() {
         super.onPause();
         if (session != null) {
-            // Note that the order matters - GLSurfaceView is paused first so that it does not try
-            // to query the session. If Session is paused before GLSurfaceView, GLSurfaceView may
-            // still call session.update() and get a SessionPausedException.
             displayRotationHelper.onPause();
             surfaceView.onPause();
             session.pause();
@@ -228,8 +284,8 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         // Prepare the rendering objects. This involves reading shaders, so may throw an IOException.
         try {
             // Create the texture and pass it to ARCore session to be filled during update().
-            backgroundRenderer.createOnGlThread(/*context=*/ this);
-            augmentedImageRenderer.createOnGlThread(/*context=*/ this);
+            backgroundRenderer.createOnGlThread(this);
+            augmentedImageRenderer.createOnGlThread(this);
         } catch (IOException e) {
             Log.e(TAG, "Failed to read an asset file", e);
         }
@@ -372,8 +428,10 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
     }
 
+
     private boolean setupAugmentedImageDatabase(Config config) {
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
+<<<<<<< HEAD
         if(!Utils.arImages.isEmpty()){
             for(Map.Entry<String,Bitmap> entrySet: Utils.arImages.entrySet()){
                 augmentedImageDatabase.addImage(entrySet.getKey(), entrySet.getValue());
@@ -386,4 +444,88 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
         }
     }
 
+=======
+
+        if (useSingleImage) {
+            Bitmap augmentedImageBitmap = loadAugmentedImageBitmap();
+            if (augmentedImageBitmap == null) {
+                return false;
+            }
+
+            augmentedImageDatabase = new AugmentedImageDatabase(session);
+            augmentedImageDatabase.addImage("planeta tierra", augmentedImageBitmap);
+            // If the physical size of the image is known, you can instead use:
+            //     augmentedImageDatabase.addImage("image_name", augmentedImageBitmap, widthInMeters);
+            // This will improve the initial detection speed. ARCore will still actively estimate the
+            // physical size of the image as it is viewed from multiple viewpoints.
+        } else {
+            // This is an alternative way to initialize an AugmentedImageDatabase instance,
+            // load a pre-existing augmented image database.
+            try (InputStream is = getAssets().open("sample_database.imgdb")) {
+                augmentedImageDatabase = AugmentedImageDatabase.deserialize(session, is);
+            } catch (IOException e) {
+                Log.e(TAG, "IO exception loading augmented image database.", e);
+                return false;
+            }
+        }
+
+        config.setAugmentedImageDatabase(augmentedImageDatabase);
+        return true;
+
+
+
+        /*
+        if(imagenes !=null){
+            for(UploadImage im : imagenes) {
+
+                /*
+                bitmapImg = null;
+                Picasso.get().load(im.getUrlImage()).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        // loaded bitmap is here (bitmap)
+                        bitmapImg = bitmap;
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        Toast.makeText(AugmentedImageActivity.this,"error: "+e.getMessage().toString(),Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {}
+                });
+
+                if(bitmapImg != null){
+                    imageDatabase.addImage(im.getNameImage(),bitmapImg);
+                }
+
+
+                try {
+                    imageDatabase.addImage(im.getNameImage(),Utils.getBitmapFromURL(im.getUrlImage()));
+                } catch(Exception e) {
+                    Toast.makeText(AugmentedImageActivity.this,"error:"+ e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        }
+
+
+            Toast.makeText(AugmentedImageActivity.this,"Numero de imagenes:"+ imageDatabase.getNumImages(), Toast.LENGTH_SHORT).show();
+            config.setAugmentedImageDatabase(imageDatabase);
+            return true;
+
+            */
+    }
+
+    private Bitmap loadAugmentedImageBitmap() {
+        try (InputStream is = getAssets().open("default.jpg")) {
+            return BitmapFactory.decodeStream(is);
+        } catch (IOException e) {
+            Log.e(TAG, "IO exception loading augmented image bitmap.", e);
+        }
+        return null;
+    }
+>>>>>>> ab1ff443ff3664fd76cb885c07d6c91e093beec7
 }
