@@ -18,6 +18,11 @@
     <string name="buttonTakePicture">Tomar fotografía</string>
     <string name="principalMainTitle">Bienvenido a Motiv-ARCHE</string>
     <string name="messageFieldRequired">Este campo es obligatorio</string>
+    <string name="google_registry">Botón de registro con google</string>
+    <string name="facebook_registry">Botón de registro con facebook</string>
+    <string name="heritage_img">Imagen de patrimonio</string>
+    <string name="fingerprint_button">Botón de huella digital</string>
+    <string name="twitter_registry">Botón de registro con twitter</string>
 
 
     <!-- menu -->
@@ -53,4 +58,11 @@
     <string name="passwordError">La contraseña y la confirmación no coinciden</string>
     <string name="imageNameHint">Ingrese nombre de la imagen</string>
 
+    <!-- Facebook -->
+    <string name="facebook_app_id">418539753218701</string>
+    <string name="fb_login_protocol_scheme">fb418539753218701</string>
+
+    <!-- Twitter -->
+    <string name="twitter_consumer_key" translatable="false">NV0RTCSdJzVf0St86A3CuSb0J</string>
+    <string name="twitter_consumer_secret" translatable="false">es6ktI4HkpNvV2eD512UeXdD6SYGhijcBX8Rt3Tix2peLWIbx6</string>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import co.edu.javeriana.motivarche.common.ProviderType;
 import co.edu.javeriana.motivarche.ui.comentarios.ComentarioActivity;
 import co.edu.javeriana.motivarche.ui.museum.MapsActivity;
 import co.edu.javeriana.motivarche.ui.preguntas.PreguntaActivity;
@@ -41,6 +43,7 @@ public class PrincipalMenu extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView mEmail;
     private DatabaseReference mDatabaseRef;
+    private ProviderType providerType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class PrincipalMenu extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String username = extras.getString("username");
         String email = extras.getString("email");
+        providerType= ProviderType.valueOf(extras.getString("provider"));
 
         mEmail.setText(username+"\n"+email);
 
@@ -89,6 +93,9 @@ public class PrincipalMenu extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         int itemClicked = item.getItemId();
         if(itemClicked == R.id.menuLogOut){
+            if(providerType == ProviderType.FACEBOOK){
+                LoginManager.getInstance().logOut();
+            }
             mAuth.signOut();
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import co.edu.javeriana.motivarche.common.ProviderType;
+
 public class RegistroActivity extends AppCompatActivity {
 
     private EditText mUserName;
@@ -56,11 +58,12 @@ public class RegistroActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void updateUI(FirebaseUser currentUser){
+    private void updateUI(FirebaseUser currentUser, ProviderType provider){
         if(currentUser!=null){
             Intent intent = new Intent(getBaseContext(), PrincipalMenu.class);
             intent.putExtra("email", currentUser.getEmail());
             intent.putExtra("username",currentUser.getDisplayName());
+            intent.putExtra("provider", provider.name());
             startActivity(intent);
         } else {
             mEmail.setText("");
@@ -88,7 +91,7 @@ public class RegistroActivity extends AppCompatActivity {
                                         upcrb.setDisplayName(mUserName.getText().toString());
                                         upcrb.setPhotoUri(Uri.parse("path/to/pic"));//fake uri, use Firebase Storage
                                         user.updateProfile(upcrb.build());
-                                        updateUI(user);
+                                        updateUI(user, ProviderType.BASIC);
                                     }
                                 }
                                 if (!task.isSuccessful()) {
