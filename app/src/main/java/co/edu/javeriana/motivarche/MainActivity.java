@@ -178,11 +178,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         ProviderType providerType = null;
+
         if (currentUser != null) {
             switch(currentUser.getProviderId()){
-                 case "password":
-                    providerType= ProviderType.BASIC;
-                    break;
                 case "google.com":
                     providerType= ProviderType.GOOGLE;
                     break;
@@ -191,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case "twitter.com":
                     providerType= ProviderType.TWITTER;
+                    break;
+                default:
+                    providerType= ProviderType.BASIC;
                     break;
             }
         }
