@@ -61,4 +61,8 @@
     <!-- Facebook -->
     <string name="facebook_app_id">418539753218701</string>
     <string name="fb_login_protocol_scheme">fb418539753218701</string>
+
+    <!-- Twitter -->
+    <string name="twitter_consumer_key" translatable="false">hC57GI4cviNSdtnsy9AakzwSe</string>
+    <string name="twitter_consumer_secret" translatable="false">OOod6oe7Q4UPnbTNeZX2TBUlNHfKMedlneHANwJp8gK8mc4lL6</string>
 </resources>
