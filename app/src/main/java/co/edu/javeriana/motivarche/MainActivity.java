@@ -39,6 +39,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -47,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
+import com.google.firebase.auth.TwitterAuthCredential;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -73,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private BiometricPrompt.PromptInfo promptInfo;
 
     private CallbackManager callbackManager;
+
+    private OAuthProvider.Builder twitterProvider = OAuthProvider.newBuilder("twitter.com");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
 
         btnGoogle.setOnClickListener(v -> signInWithGoogle());
 
+        btnTwitter.setOnClickListener(v -> signInWithTwitter());
+
 
         executor = ContextCompat.getMainExecutor(this);
         biometricPrompt = new BiometricPrompt(MainActivity.this,
@@ -163,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         checkSettingsFingerprint();
 
     }
+
 
     private void showAlert(){
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
@@ -292,6 +300,51 @@ public class MainActivity extends AppCompatActivity {
                         showAlert();
                     }
                 });
+    }
+
+    private void signInWithTwitter() {
+        twitterProvider.addCustomParameter("lang", "fr");
+        Task<AuthResult> pendingResultTask = mAuth.getPendingAuthResult();
+        if (pendingResultTask != null) {
+            // There's something already here! Finish the sign-in for your user.
+            pendingResultTask
+                    .addOnSuccessListener(
+                            new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+
+                                    updateUI(authResult.getUser(), ProviderType.TWITTER);
+                                   // startActivity(new Intent(MainActivity.this, PrincipalMenu.class));
+                                }
+                            })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    System.out.println("enttro aca y falo");
+                                    // Handle failure.
+                                }
+                            });
+        } else {
+            mAuth
+                    .startActivityForSignInWithProvider(/* activity= */ this, twitterProvider.build())
+                    .addOnSuccessListener(
+                            new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+                                    updateUI(authResult.getUser(), ProviderType.TWITTER);
+                                   //startActivity(new Intent(MainActivity.this, PrincipalMenu.class));
+                                }
+                            })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    System.out.println("enttro aca y falo2");
+                                    // Handle failure.
+                                }
+                            });
+        }
     }
 
     private void signInUser(String email, String password) {
