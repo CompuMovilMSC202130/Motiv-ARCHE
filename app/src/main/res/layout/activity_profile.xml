@@ -14,7 +14,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/txtNombreUsuario"
@@ -24,7 +25,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
-            android:background="@drawable/rounded_corner_edit"
+            android:background="@drawable/roundcorner_text"
             android:fontFamily="@font/mulish_regular"
             android:hint="@string/user_name"
             android:inputType="text"
@@ -38,7 +39,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
-            android:background="@drawable/rounded_corner_edit"
+            android:background="@drawable/roundcorner_text"
             android:ems="10"
             android:fontFamily="@font/mulish_regular"
             android:hint="@string/user_mail"
@@ -53,7 +54,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
-            android:background="@drawable/rounded_corner_edit"
+            android:background="@drawable/roundcorner_text"
             android:ems="10"
             android:fontFamily="@font/mulish_regular"
             android:hint="@string/actual_user_password"
@@ -68,7 +69,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="34dp"
-            android:background="@drawable/rounded_corner_edit"
+            android:background="@drawable/roundcorner_text"
             android:ems="10"
             android:fontFamily="@font/mulish_regular"
             android:hint="@string/new_user_password"
