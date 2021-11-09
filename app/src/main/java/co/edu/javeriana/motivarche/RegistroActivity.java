@@ -21,6 +21,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 import co.edu.javeriana.motivarche.common.ProviderType;
 
@@ -32,6 +36,7 @@ public class RegistroActivity extends AppCompatActivity {
     private EditText mPasswordConfirmation;
     private Button registerButton;
     private FirebaseAuth mAuth;
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,7 @@ public class RegistroActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                        registerUser(mEmail.getText().toString().trim(), mPassword.getText().toString().trim(),mPasswordConfirmation.getText().toString().trim());
+                        registerUser(mUserName.getText().toString().trim(),mEmail.getText().toString().trim(), mPassword.getText().toString().trim(),mPasswordConfirmation.getText().toString().trim());
             }
         });
 
@@ -61,9 +66,7 @@ public class RegistroActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser currentUser, ProviderType provider){
         if(currentUser!=null){
             Intent intent = new Intent(getBaseContext(), PrincipalMenu.class);
-            intent.putExtra("email", currentUser.getEmail());
-            intent.putExtra("username",currentUser.getDisplayName());
-            intent.putExtra("provider", provider.name());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
             mEmail.setText("");
@@ -73,7 +76,7 @@ public class RegistroActivity extends AppCompatActivity {
         }
     }
 
-    private void registerUser(String email, String password, String passwordConfirmation) {
+    private void registerUser(String username,String email, String password, String passwordConfirmation) {
         if(validateForm()) {
             boolean emailValido = isEmailValid(email);
             boolean passwordValido = checkPassword(password, passwordConfirmation);
@@ -87,11 +90,30 @@ public class RegistroActivity extends AppCompatActivity {
                                     Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     if (user != null) { //Update user Info
-                                        UserProfileChangeRequest.Builder upcrb = new UserProfileChangeRequest.Builder();
-                                        upcrb.setDisplayName(mUserName.getText().toString());
-                                        upcrb.setPhotoUri(Uri.parse("path/to/pic"));//fake uri, use Firebase Storage
-                                        user.updateProfile(upcrb.build());
-                                        updateUI(user, ProviderType.BASIC);
+                                        String userId = user.getUid();
+                                        reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                                        HashMap<String,String> hashMap = new HashMap<>();
+                                        hashMap.put("id",userId);
+                                        hashMap.put("username",username);
+                                        hashMap.put("email",email);
+                                        hashMap.put("imageURL","default");
+                                        hashMap.put("provider",ProviderType.BASIC.name());
+
+                                        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    UserProfileChangeRequest.Builder upcrb = new UserProfileChangeRequest.Builder();
+                                                    Log.i("Nombre de usuario",username);
+                                                    upcrb.setDisplayName(username);
+                                                    upcrb.setPhotoUri(Uri.parse("default"));//fake uri, use Firebase Storage
+                                                    user.updateProfile(upcrb.build());
+                                                    updateUI(user, ProviderType.BASIC);
+                                                }
+                                            }
+                                        });
+
+
                                     }
                                 }
                                 if (!task.isSuccessful()) {

@@ -14,8 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,14 +38,18 @@ import co.edu.javeriana.motivarche.ui.profile.ProfileActivity;
 import co.edu.javeriana.motivarche.ui.scanner.AugmentedImageActivity;
 import co.edu.javeriana.motivarche.ui.scanner.UploadImage;
 import co.edu.javeriana.motivarche.ui.tutorial.TutorialActivity;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class PrincipalMenu extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private TextView mEmail;
-    private DatabaseReference mDatabaseRef;
+    private CircleImageView profile_image;
+    private TextView username;
+    private DatabaseReference referenceUser;
     private ProviderType providerType;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +58,31 @@ public class PrincipalMenu extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mEmail = findViewById(R.id.textEmail);
+        username = findViewById(R.id.username);
+        profile_image = findViewById(R.id.profile_image);
 
-        Bundle extras = getIntent().getExtras();
-        String username = extras.getString("username");
-        String email = extras.getString("email");
-        providerType= ProviderType.valueOf(extras.getString("provider"));
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null){
+            referenceUser = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            referenceUser.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Usuario usuario = snapshot.getValue(Usuario.class);
+                    username.setText(usuario.getUsername());
+                    mEmail.setText(usuario.getEmail());
+                    if(usuario.getImageURL().equals("default")){
+                        profile_image.setImageResource(R.mipmap.ic_launcher);
+                    }else{
+                        Glide.with(PrincipalMenu.this).load(user.getPhotoUrl()).into(profile_image);
+                    }
+                }
 
-        mEmail.setText(username+"\n"+email);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
 
     }
 
@@ -116,4 +140,8 @@ public class PrincipalMenu extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void abrirChat(View view) {
+        Intent intent = new Intent(PrincipalMenu.this, ChatActivity.class);
+        startActivity(intent);
+    }
 }
