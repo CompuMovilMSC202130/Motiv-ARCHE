@@ -1,6 +1,7 @@
 package co.edu.javeriana.motivarche;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,15 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.ViewHold
         }else{
             Glide.with(mContext).load(usuario.getImageURL()).into(holder.profile_image);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,MessageActivity.class);
+                intent.putExtra("userId",usuario.getId());
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 

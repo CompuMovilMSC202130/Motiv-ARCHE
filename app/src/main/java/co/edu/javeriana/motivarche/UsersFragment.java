@@ -1,12 +1,14 @@
 package co.edu.javeriana.motivarche;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,22 +21,24 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends AppCompatActivity {
+public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private UsuarioAdapter usuarioAdapter;
     private List<Usuario> mUsers;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
+        View view = inflater.inflate(R.layout.fragment_users,container,false);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         mUsers = new ArrayList<>();
         readUsers();
+
+        return view;
 
     }
 
@@ -54,7 +58,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
 
-                usuarioAdapter = new UsuarioAdapter(ChatActivity.this, mUsers);
+                usuarioAdapter = new UsuarioAdapter(getContext(), mUsers);
                 recyclerView.setAdapter(usuarioAdapter);
             }
 

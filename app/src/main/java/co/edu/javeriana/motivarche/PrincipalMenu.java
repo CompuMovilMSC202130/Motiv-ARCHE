@@ -1,15 +1,11 @@
 package co.edu.javeriana.motivarche;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,12 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import co.edu.javeriana.motivarche.common.ProviderType;
 import co.edu.javeriana.motivarche.ui.comentarios.ComentarioActivity;
@@ -36,7 +26,6 @@ import co.edu.javeriana.motivarche.ui.museum.MapsActivity;
 import co.edu.javeriana.motivarche.ui.preguntas.PreguntaActivity;
 import co.edu.javeriana.motivarche.ui.profile.ProfileActivity;
 import co.edu.javeriana.motivarche.ui.scanner.AugmentedImageActivity;
-import co.edu.javeriana.motivarche.ui.scanner.UploadImage;
 import co.edu.javeriana.motivarche.ui.tutorial.TutorialActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -73,7 +62,7 @@ public class PrincipalMenu extends AppCompatActivity {
                     if(usuario.getImageURL().equals("default")){
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     }else{
-                        Glide.with(PrincipalMenu.this).load(user.getPhotoUrl()).into(profile_image);
+                        Glide.with(PrincipalMenu.this).load(usuario.getImageURL()).into(profile_image);
                     }
                 }
 
@@ -141,7 +130,7 @@ public class PrincipalMenu extends AppCompatActivity {
     }
 
     public void abrirChat(View view) {
-        Intent intent = new Intent(PrincipalMenu.this, ChatActivity.class);
+        Intent intent = new Intent(PrincipalMenu.this, ChatMessageActivity.class);
         startActivity(intent);
     }
 }

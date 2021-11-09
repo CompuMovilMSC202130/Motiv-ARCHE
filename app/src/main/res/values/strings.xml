@@ -23,6 +23,7 @@
     <string name="heritage_img">Imagen de patrimonio</string>
     <string name="fingerprint_button">Botón de huella digital</string>
     <string name="twitter_registry">Botón de registro con twitter</string>
+    <string name="message_text">Ingrese mensaje de texto</string>
 
 
     <!-- menu -->
@@ -66,4 +67,5 @@
     <!-- Twitter -->
     <string name="twitter_consumer_key" translatable="false">hC57GI4cviNSdtnsy9AakzwSe</string>
     <string name="twitter_consumer_secret" translatable="false">OOod6oe7Q4UPnbTNeZX2TBUlNHfKMedlneHANwJp8gK8mc4lL6</string>
+
 </resources>
