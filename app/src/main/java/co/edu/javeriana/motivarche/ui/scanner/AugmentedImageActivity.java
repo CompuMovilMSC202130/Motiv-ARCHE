@@ -116,7 +116,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 .into(fitToScanView);
 
         installRequested = false;
-        createARDatabase();
+        //createARDatabase();
 
     }
 
@@ -432,7 +432,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
                         @Override
                         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                            Log.i("TARGETS error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
+                            Log.i("targets-error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
                         }
 
                         @Override
