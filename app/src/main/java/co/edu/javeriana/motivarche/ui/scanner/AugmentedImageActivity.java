@@ -388,30 +388,6 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
             config.setAugmentedImageDatabase(augmentedImageDatabase);
             return true;
         }else{
-
-            int cont =0;
-        while(Utils.arImages.isEmpty()){
-            if(cont != 10) {
-                try {
-                    Thread.sleep(3000);
-                    cont++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }else{
-                break;
-            }
-        }
-
-            if(!Utils.arImages.isEmpty()){
-                for(Map.Entry<String,Bitmap> entrySet: Utils.arImages.entrySet()){
-                    augmentedImageDatabase.addImage(entrySet.getKey(), entrySet.getValue());
-                }
-
-                config.setAugmentedImageDatabase(augmentedImageDatabase);
-                return true;
-            }
-
             return false;
         }
     }

@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         FacebookSdk.sdkInitialize(this);
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
-        createARDatabase();
+
+
         AppEventsLogger.activateApp(this.getApplication());
         callbackManager= CallbackManager.Factory.create();
         mEmail = findViewById(R.id.editTextTextEmailAddress);
@@ -511,36 +511,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void createARDatabase(){
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot postSnapshot : snapshot.getChildren()){
-                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
 
-                    Picasso.get().load(uploadImage.getUrlImage()).into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            Utils.arImages.put(uploadImage.getNameImage(),bitmap);
-                            Log.i("TARGETS","agregando target "+uploadImage.getNameImage());
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                            Log.i("targets-error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("TARGETS error","error database "+error.getMessage());
-            }
-        });
-    }
 }

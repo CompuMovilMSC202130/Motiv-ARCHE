@@ -1,7 +1,10 @@
 package co.edu.javeriana.motivarche;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import co.edu.javeriana.motivarche.common.ProviderType;
 import co.edu.javeriana.motivarche.ui.comentarios.ComentarioActivity;
@@ -26,6 +31,7 @@ import co.edu.javeriana.motivarche.ui.museum.MapsActivity;
 import co.edu.javeriana.motivarche.ui.preguntas.PreguntaActivity;
 import co.edu.javeriana.motivarche.ui.profile.ProfileActivity;
 import co.edu.javeriana.motivarche.ui.scanner.AugmentedImageActivity;
+import co.edu.javeriana.motivarche.ui.scanner.UploadImage;
 import co.edu.javeriana.motivarche.ui.tutorial.TutorialActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,6 +44,7 @@ public class PrincipalMenu extends AppCompatActivity {
     private TextView username;
     private DatabaseReference referenceUser;
     private ProviderType providerType;
+    private DatabaseReference mDatabaseRef;
     private FirebaseUser user;
 
     @Override
@@ -49,7 +56,8 @@ public class PrincipalMenu extends AppCompatActivity {
         mEmail = findViewById(R.id.textEmail);
         username = findViewById(R.id.username);
         profile_image = findViewById(R.id.profile_image);
-
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
+        createARDatabase();
         user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
             referenceUser = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
@@ -132,5 +140,38 @@ public class PrincipalMenu extends AppCompatActivity {
     public void abrirChat(View view) {
         Intent intent = new Intent(PrincipalMenu.this, ChatMessageActivity.class);
         startActivity(intent);
+    }
+
+    private void createARDatabase(){
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot postSnapshot : snapshot.getChildren()){
+                    UploadImage uploadImage = postSnapshot.getValue(UploadImage.class);
+
+                    Picasso.get().load(uploadImage.getUrlImage()).into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            Utils.arImages.put(uploadImage.getNameImage(),bitmap);
+                            Log.i("TARGETS","agregando target "+uploadImage.getNameImage());
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Log.i("targets-error","error target "+uploadImage.getNameImage()+"/"+e.getMessage());
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("TARGETS error","error database "+error.getMessage());
+            }
+        });
     }
 }
