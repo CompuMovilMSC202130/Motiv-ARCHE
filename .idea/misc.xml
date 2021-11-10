@@ -11,31 +11,42 @@
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/MotivARCHE/app/src/main/res/layout/activity_registro.xml" value="0.25" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/MotivARCHE/app/src/main/res/layout/fragment_profile.xml" value="0.5" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/drawable-v24/roundcorner.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/drawable/background_left.xml" value="0.3087179487179487" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/drawable/background_night.xml" value="0.31354166666666666" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/drawable/roundcorner_text.xml" value="0.13541666666666666" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_chat.xml" value="0.3796875" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_chat_message.xml" value="0.22" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_comentarios.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_images.xml" value="0.49322916666666666" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_map.xml" value="0.1796875" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_message.xml" value="0.33" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_picture.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_preguntas.xml" value="0.1796875" />
-        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_profile.xml" value="0.1796875" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_profile.xml" value="0.25" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_registro.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_scanner.xml" value="0.175" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/activity_tutorial.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/app_bar_main.xml" value="0.1" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/bar_layout.xml" value="0.33489583333333334" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/chat_item_left.xml" value="0.29739583333333336" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/chat_item_right.xml" value="0.29739583333333336" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/comentarios.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/content_main.xml" value="0.1" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_camera.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_chats.xml" value="0.32083333333333336" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_home.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_maps.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_museum.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_profile.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_scanner.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_tutorial.xml" value="0.1" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/fragment_users.xml" value="0.26145833333333335" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/image_item.xml" value="0.49322916666666666" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/nav_header_main.xml" value="0.1" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/preguntas.xml" value="0.1" />
-        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/principal_menu.xml" value="0.22" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/principal_menu.xml" value="0.67" />
+        <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/layout/user_item.xml" value="0.26145833333333335" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/menu/activity_main_drawer.xml" value="0.1796875" />
         <entry key="..\:/Users/jutec/Documentos/Android/github/Motiv-ARCHE/app/src/main/res/menu/menu.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/jutec/Documents/Android/github/Motiv-ARCHE/app/src/main/res/drawable/ic_menu_camera.xml" value="0.3271794871794872" />

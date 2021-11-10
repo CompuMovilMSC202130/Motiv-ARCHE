@@ -15,6 +15,9 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -50,15 +53,27 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.auth.TwitterAuthCredential;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
 import co.edu.javeriana.motivarche.common.ProviderType;
+import co.edu.javeriana.motivarche.ui.scanner.UploadImage;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private DatabaseReference mDatabaseRef;
     private final int GOOGLE_SIGN_IN=100;
 
     Button btnIniciarSesion;
@@ -70,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mEmail;
     private EditText mPassword;
     SharedPreferences sharedPreferences;
+    private DatabaseReference referenceUser;
 
     private Executor executor;
     private BiometricPrompt biometricPrompt;
@@ -208,12 +224,48 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser currentUser, ProviderType provider){
         if(currentUser!=null){
-            Intent intent = new Intent(getBaseContext(), PrincipalMenu.class);
-            intent.putExtra("email", currentUser.getEmail());
-            intent.putExtra("username",currentUser.getDisplayName());
-            intent.putExtra("isLogin",true);
-            intent.putExtra("provider", provider.name());
-            startActivity(intent);
+            referenceUser = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+
+            referenceUser.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(!snapshot.exists()){
+                        HashMap<String,String> hashMap = new HashMap<>();
+                        hashMap.put("id",currentUser.getUid());
+                        hashMap.put("username",currentUser.getDisplayName());
+                        hashMap.put("email",currentUser.getEmail());
+                        hashMap.put("imageURL",currentUser.getPhotoUrl().toString());
+                        hashMap.put("provider",provider.name());
+                        referenceUser.setValue(hashMap);
+                        Intent intent = new Intent(getBaseContext(), PrincipalMenu.class);
+                        startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(getBaseContext(), PrincipalMenu.class);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            /*
+            if(referenceUser == null){
+                String userId = currentUser.getUid();
+                reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                HashMap<String,String> hashMap = new HashMap<>();
+                hashMap.put("id",userId);
+                hashMap.put("username",currentUser.getDisplayName());
+                hashMap.put("email",currentUser.getEmail());
+                hashMap.put("imageURL",currentUser.getPhotoUrl().toString());
+                hashMap.put("provider", provider.name());
+                reference.setValue(hashMap);
+            }
+
+
+            */
+
         } else {
             mEmail.setText("");
             mPassword.setText("");
@@ -303,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signInWithTwitter() {
-        twitterProvider.addCustomParameter("lang", "fr");
+        twitterProvider.addCustomParameter("lang", "es");
         Task<AuthResult> pendingResultTask = mAuth.getPendingAuthResult();
         if (pendingResultTask != null) {
             // There's something already here! Finish the sign-in for your user.
@@ -457,4 +509,7 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+
 }
