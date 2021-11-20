@@ -41,9 +41,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -114,15 +111,12 @@ public class MainActivity extends AppCompatActivity {
         fingerButton = findViewById(R.id.fingerButton);
         sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
 
-        fingerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                biometricPrompt.authenticate(promptInfo);
-                String email = sharedPreferences.getString("email","");
-                String password = sharedPreferences.getString("password","");
-                mEmail.setText(email);
-                mPassword.setText(password);
-            }
+        fingerButton.setOnClickListener(v -> {
+            biometricPrompt.authenticate(promptInfo);
+            String email = sharedPreferences.getString("email","");
+            String password = sharedPreferences.getString("password","");
+            mEmail.setText(email);
+            mPassword.setText(password);
         });
 
         boolean isLogin = sharedPreferences.getBoolean("isLogin",false);
@@ -130,12 +124,7 @@ public class MainActivity extends AppCompatActivity {
             fingerButton.setVisibility(View.VISIBLE);
         }
 
-        btnIniciarSesion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    signInUser(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
-            }
-        });
+        btnIniciarSesion.setOnClickListener(view -> signInUser(mEmail.getText().toString().trim(), mPassword.getText().toString().trim()));
 
         btnFacebook.setOnClickListener(v -> signInWithFacebook());
 
@@ -361,40 +350,28 @@ public class MainActivity extends AppCompatActivity {
             // There's something already here! Finish the sign-in for your user.
             pendingResultTask
                     .addOnSuccessListener(
-                            new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
+                            authResult -> {
 
-                                    updateUI(authResult.getUser(), ProviderType.TWITTER);
-                                   // startActivity(new Intent(MainActivity.this, PrincipalMenu.class));
-                                }
+                                updateUI(authResult.getUser(), ProviderType.TWITTER);
+                               startActivity(new Intent(MainActivity.this, PrincipalMenu.class));
                             })
                     .addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    System.out.println("enttro aca y falo");
-                                    // Handle failure.
-                                }
+                            e -> {
+                                System.out.println("entró acá y falló");
+                                // Handle failure.
                             });
         } else {
             mAuth
                     .startActivityForSignInWithProvider(/* activity= */ this, twitterProvider.build())
                     .addOnSuccessListener(
-                            new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-                                    updateUI(authResult.getUser(), ProviderType.TWITTER);
-                                   //startActivity(new Intent(MainActivity.this, PrincipalMenu.class));
-                                }
+                            authResult -> {
+                                updateUI(authResult.getUser(), ProviderType.TWITTER);
+                                startActivity(new Intent(MainActivity.this, PrincipalMenu.class));
                             })
                     .addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    System.out.println("enttro aca y falo2");
-                                    // Handle failure.
-                                }
+                            e -> {
+                                System.out.println("entró aca y falló");
+                                // Handle failure.
                             });
         }
     }
@@ -404,35 +381,32 @@ public class MainActivity extends AppCompatActivity {
             if(isEmailValid(email)) {
 
                 mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI
+                        .addOnCompleteListener(this, task -> {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI
 
-                                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-                                    editor.putString("email",email);
-                                    editor.putString("password",password);
-                                    editor.putBoolean("isLogin",true);
-                                    editor.apply();
+                                SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                                editor.putString("email",email);
+                                editor.putString("password",password);
+                                editor.putBoolean("isLogin",true);
+                                editor.apply();
 
-                                    Log.d(TAG, "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    updateUI(user, ProviderType.BASIC);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(MainActivity.this, R.string.auth_failed + Objects.requireNonNull(task.getException()).toString(),
-                                            Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                updateUI(user, ProviderType.BASIC);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(MainActivity.this, R.string.auth_failed + Objects.requireNonNull(task.getException()).toString(),
+                                        Toast.LENGTH_SHORT).show();
 
-                                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-                                    editor.putString("email","");
-                                    editor.putString("password","");
-                                    editor.putBoolean("isLogin",false);
-                                    editor.apply();
+                                SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                                editor.putString("email","");
+                                editor.putString("password","");
+                                editor.putBoolean("isLogin",false);
+                                editor.apply();
 
-                                    updateUI(null, null);
-                                }
+                                updateUI(null, null);
                             }
                         });
             }else{
@@ -505,7 +479,6 @@ public class MainActivity extends AppCompatActivity {
             }catch (ApiException ae){
                 Log.w(TAG, "Falló el login de google", ae);
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
