@@ -107,6 +107,10 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <service android:name="com.google.firebase.messaging.FirebaseMessagingService">
+        </service>
+
+
     </application>
 
 </manifest>

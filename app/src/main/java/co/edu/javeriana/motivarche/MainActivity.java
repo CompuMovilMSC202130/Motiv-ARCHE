@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -59,6 +60,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -101,8 +103,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         FacebookSdk.sdkInitialize(this);
-
-
+        notification();
         AppEventsLogger.activateApp(this.getApplication());
         callbackManager= CallbackManager.Factory.create();
         mEmail = findViewById(R.id.editTextTextEmailAddress);
@@ -187,7 +188,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void notification(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        String token = task.getResult();
+                        System.out.println("mi token es" + token);
 
+                    }
+                });
+    }
     private void showAlert(){
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
         builder.setTitle("Error");
