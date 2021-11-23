@@ -84,7 +84,18 @@ public class ChatsFragment extends Fragment {
             }
         });
 
-        updateToken(FirebaseMessaging.getInstance().getToken().toString());
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Log.w("error", "Fetching FCM registration token failed", task.getException());
+                    return;
+                }
+                String token = task.getResult();
+                updateToken(token);
+            }
+        });
+
 
         return view;
     }

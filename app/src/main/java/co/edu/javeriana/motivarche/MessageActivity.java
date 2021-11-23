@@ -165,10 +165,6 @@ public class MessageActivity extends AppCompatActivity {
                             .enqueue(new Callback<MyResponse>() {
                         @Override
                         public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                            Toast.makeText(MessageActivity.this,response.toString(), Toast.LENGTH_LONG).show();
-                            Log.i("respuesta",response.message());
-                            Log.i("respuesta",response.message());
-                            Log.i("respuesta",String.valueOf(response.body().success));
                             if (response.code()==200){
                                 if(response.body().success != 1){
                                     Toast.makeText(MessageActivity.this,"Fallo", Toast.LENGTH_SHORT).show();
