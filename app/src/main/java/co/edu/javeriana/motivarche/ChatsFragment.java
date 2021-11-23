@@ -41,7 +41,6 @@ public class ChatsFragment extends Fragment {
     private List<Usuario> mUsuarios;
 
     FirebaseUser fuser;
-    DatabaseReference reference;
 
     private List<String> usersList;
 
@@ -59,7 +58,7 @@ public class ChatsFragment extends Fragment {
 
         usersList = new ArrayList<>();
 
-        reference = FirebaseDatabase.getInstance().getReference("chats");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,22 +72,6 @@ public class ChatsFragment extends Fragment {
                         usersList.add(chat.getReceiver());
                     }
 
-                    if(chat.getReceiver().equals(fuser.getUid())){
-                        usersList.add(chat.getSender());
-                        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-                        reference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                sendNotification(chat.getReceiver(), fuser.getDisplayName(),msg);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-                    }
                 }
 
                 readChats();
@@ -100,39 +83,25 @@ public class ChatsFragment extends Fragment {
 
             }
         });
+
         updateToken(FirebaseMessaging.getInstance().getToken().toString());
 
         return view;
     }
+
     private void updateToken (String token){
-        reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token token1 = new Token(token);
         reference.child(fuser.getUid()).setValue(token1);
     }
-    private void sendNotification(String receiver, String userName, String message){
-        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receiver);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1: snapshot.getChildren()){
-                     Token token = snapshot1.getValue(Token.class);
-                     Data data = new Data(receiver, R.mipmap.ic_launcher,userName+": "+message,"New Message",fuser.getUid() );
-                    Sender sender = new Sender(data,token.getToken());
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-    }
+
 
     private void readChats(){
         mUsuarios = new ArrayList<>();
 
-        reference = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

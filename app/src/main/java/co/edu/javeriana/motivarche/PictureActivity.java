@@ -179,6 +179,7 @@ public class PictureActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case Utils.IMAGE_PICKER_REQUEST_CODE:
+                filePath = null;
                 if(resultCode == RESULT_OK && data != null && data.getData() != null){
                     try {
                         final Uri imageUri = data.getData();
@@ -192,6 +193,7 @@ public class PictureActivity extends AppCompatActivity {
                 }
                 break;
             case Utils.IMAGE_TAKE_REQUEST_CODE:
+                filePath = null;
                 if(resultCode == RESULT_OK){
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");

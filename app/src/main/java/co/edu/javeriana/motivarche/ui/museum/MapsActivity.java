@@ -343,6 +343,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 });
+            }else{
+                checkSettingsLocation();
             }
         }
     }
@@ -374,7 +376,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case Utils.GPS_REQUEST_CODE:
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
-                    //checkSettingsLocation();
+                    checkSettingsLocation();
                 }else{
                     Log.i("posicion","no se tiene acceso al gps");
                     Toast.makeText(this,"No se tiene acceso al gps del dispositivo",Toast.LENGTH_SHORT).show();

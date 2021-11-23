@@ -9,20 +9,29 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-class MyFirebaseMessagingService extends FirebaseMessagingService {
+import java.util.HashMap;
+import java.util.Map;
+
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage){
-       super.onMessageReceived(remoteMessage);
-       String sented = remoteMessage.getData().get("sented");
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+        String sented = remoteMessage.getData().get("sented");
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null && sented.equals(firebaseUser.getUid())){
             sendNotification(remoteMessage);
@@ -35,11 +44,12 @@ class MyFirebaseMessagingService extends FirebaseMessagingService {
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
+        Log.i("recibido",remoteMessage.getData().toString());
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
         Intent intent = new Intent(this, MessageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("userid",user);
+        bundle.putString("userId",user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,j , intent,PendingIntent.FLAG_ONE_SHOT);
@@ -58,4 +68,22 @@ class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         noti.notify(i,builder.build());
     }
+
+    @Override
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
+        
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null){
+            updateToken(s);
+        }
+    }
+
+    private void updateToken(String refreshToken) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token = new Token(refreshToken);
+        reference.child(firebaseUser.getUid()).setValue(token);
+    }
+
 }

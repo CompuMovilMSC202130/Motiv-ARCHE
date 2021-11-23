@@ -65,7 +65,8 @@ public class RegistroActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser currentUser, ProviderType provider){
         if(currentUser!=null){
-            Intent intent = new Intent(getBaseContext(), PrincipalMenu.class);
+            mAuth.signOut();
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
